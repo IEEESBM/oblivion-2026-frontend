@@ -1,0 +1,60 @@
+{
+  "members": [
+    {
+      "name": "Pia Jemin Mehta",
+      "designation": "Developer",
+      "image": "pia_IEEE.jpeg",
+      "instagram": "https://www.instagram.com/piamehta._/",
+      "github": "https://github.com/PiaJMehta",
+      "linkedin": "https://www.linkedin.com/in/pia-jemin-mehta-/"
+    },
+    {
+      "name": "Mohak Singhal",
+      "designation": "Developer",
+      "image": "mohak.jpg",
+      "instagram": "",
+      "github": "",
+      "linkedin": "https://www.linkedin.com/in/mohak-singhal/"
+    },
+    {
+      "name": "Mrityunjay Singh",
+      "designation": "Developer",
+      "image": "Mrityunjay.jpg",
+      "instagram": "https://www.instagram.com/mrityunjaya.jathrana?igsh=MXF3Y3Y1b2NlcDRlbA%3D%3D&utm_source=qr",
+      "github": "https://github.com/Yunjay-singh",
+      "linkedin": "https://www.linkedin.com/in/mrityunjaya-singh-747623353?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
+    },
+    {
+      "name": "Anushka Salgaonkar",
+      "designation": "Designer",
+      "image": "anushka_MTT_IEEE.jpeg",
+      "instagram": "https://www.instagram.com/anushkasalgaonkarr?igsh=MTRjYzQ1dm5vMmpkbA==",
+      "github": "",
+      "linkedin": ""
+    },
+    {
+      "name": "Priyanshu Das",
+      "designation": "Designer",
+      "image": "priyanshu.jpg",
+      "instagram": "https://www.instagram.com/priyanshudas_7?igsh=bmR4dDkyZzVuMWI2",
+      "github": "https://github.com/lepnoxic",
+      "linkedin": "https://www.linkedin.com/in/priyanshu-das-0431152b5?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+    },
+    {
+      "name": "Joy Nitinkumar Patel",
+      "designation": "Designer",
+      "image": "joy.jpeg",
+      "instagram": "https://www.instagram.com/joy4728patel?igsh=MXQxd2huYm5hbWx4dQ==",
+      "github": "",
+      "linkedin": "https://www.linkedin.com/in/joy-patel-7b47a2268?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+    },
+    {
+      "name": "Lakshya Bhaintwal",
+      "designation": "Designer",
+      "image": "lakshya.jpg",
+      "instagram": "https://www.instagram.com/lakshya___me?igsh=NXF3c2NlMmlsaHMx",
+      "github": "https://github.com/lakshyabhaintwal",
+      "linkedin": "https://www.linkedin.com/in/lakshya-bhaintwal-342568281?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+    }
+  ]
+}

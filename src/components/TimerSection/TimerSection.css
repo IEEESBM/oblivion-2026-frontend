@@ -1,0 +1,95 @@
+.timer_container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10rem;
+}
+
+.timer {
+  display: flex;
+  color: #ffffff;
+  text-align: center;
+  font-family: "Poppins";
+  gap: 1.2rem;
+  padding-bottom: 20%;
+}
+
+.timer_text {
+  color: #ffffff;
+  width: 72vw;
+  line-height: 4rem;
+  text-align: center;
+  font-family: "Montserrat";
+  font-size: 2.88rem;
+  opacity: 1;
+
+}
+
+.timer_element {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.timer_element .timer_number {
+  font-size: 12.8rem;
+}
+
+.timer_element .timer_label {
+  font-family: "Poppins";
+  font-size: 2.24rem;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.timer_dots {
+  font-size: 8.8rem;
+  margin-top: 2.4rem;
+}
+
+/* Large devices */
+@media (max-width: 1200px) {
+  .timer_text {
+    font-size: 2.56rem;
+  }
+
+  .timer_element .timer_number {
+    font-size: 10.4rem;
+  }
+
+  .timer_dots {
+    font-size: 8rem;
+    margin-top: 1.76rem;
+  }
+}
+
+/* Phones, portrait iPad etc. */
+@media (max-width: 768px) {
+  .timer {
+    display: flex;
+    flex-direction: column;
+    color: #16C2D1;
+    text-align: center;
+    font-family: "Poppins";
+    gap: 0.8rem;
+  }
+
+  .timer_text {
+    font-size: 2.2rem;
+    width: 90vw;
+  }
+
+  .timer_element .timer_number {
+    font-size: 9rem;
+  }
+
+  .timer_element .timer_label {
+    font-size: 1.8rem;
+  }
+
+  .timer_dots {
+    display: none;
+  }
+}
