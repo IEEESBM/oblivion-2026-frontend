@@ -40,20 +40,8 @@ const Section = styled.section`
   background: transparent;
 `;
 
-/* Gradient overlay that sits on top of the background image
-   to darken edges and ensure text stays readable */
-const Overlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse at 50% 50%,
-    rgba(0, 0, 0, 0.15) 0%,
-    rgba(0, 0, 0, 0.55) 60%,
-    rgba(0, 0, 0, 0.85) 100%
-  );
-  pointer-events: none;
-  z-index: 0;
-`;
+// Overlay removed — the vignette is baked into <FixedBackground> in Home.jsx.
+// A single overlay element across the whole page guarantees zero seams.
 
 const Content = styled.div`
   position: relative;
@@ -236,8 +224,6 @@ function TimerSection({ onIntersection }) {
 
   return (
     <Section ref={ref}>
-      <Overlay />
-
       <Content>
         <EventLabel>Oblivion 2026</EventLabel>
 
@@ -263,9 +249,7 @@ function TimerSection({ onIntersection }) {
     </Section>
   );
 }
-
 TimerSection.propTypes = {
   onIntersection: PropTypes.func,
 };
-
 export default TimerSection;

@@ -17,16 +17,25 @@ function raf(time) {
 }
 requestAnimationFrame(raf);
 
-// 🌌 Fixed background — stays visible across the ENTIRE page scroll.
-//    To swap the image:  change the import above to point to your new file.
+// 🌌 Fixed background + overlay baked into one element.
+//    The dark vignette is a CSS gradient layer stacked ON TOP of the image.
+//    Because it's a single element there is no boundary where darkness changes
+//    — every section on the page sees exactly the same tint → no seams.
+//    To swap the image: change the import above.
 const FixedBackground = styled.div`
   position: fixed;
   inset: 0;
   z-index: -1;
-  background-image: url(${blackholeBg});
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background:
+    /* vignette layer — sits on top of the image */
+    radial-gradient(
+      ellipse 120% 100% at 50% 20%,
+      rgba(0, 0, 0, 0.15) 0%,
+      rgba(0, 0, 0, 0.55) 65%,
+      rgba(0, 0, 0, 0.78) 100%
+    ),
+    /* the blackhole image behind */
+    url(${blackholeBg}) center / cover no-repeat;
 `;
 
 
