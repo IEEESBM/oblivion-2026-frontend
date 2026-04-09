@@ -141,7 +141,7 @@ const Footer = ({ scrollToHero }) => {
         </div>
         <div>
           <a onClick={scrollToHero}>
-            <h1 className="text-white font-mioge m-1.5 hover:text-[#16C2D1] max-[760px]:hidden" style={{ paddingLeft: '55%'}}>ODYSSEY</h1>
+            <h1 className="text-white font-mioge m-1.5 hover:text-[#16C2D1] max-[760px]:hidden" style={{ paddingLeft: '55%'}}>OBLIVION</h1>
           </a>
         </div>
         <div>

@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { Select } from "@chakra-ui/select";
-import bg from "../assets/video/bg.jpg";
+import bg from "../assets/blackhole-bg.png";
 import { MdArrowBack } from "react-icons/md";
 import logo from "../assets/ODYSSEY.png";
 import { UserContext } from "../App";

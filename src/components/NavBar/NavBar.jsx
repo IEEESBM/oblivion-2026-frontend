@@ -205,7 +205,7 @@ export default function NavBar({
         </Li>
         {isLargeScreen && (
           <Li onClick={scrollToHero}>
-            <h1 className="hover:text-[#16C2D1] ">ODYSSEY</h1>
+            <h1 className="hover:text-[#16C2D1] ">OBLIVION</h1>
           </Li>
         )}
         <Li
