@@ -11,7 +11,7 @@ import PropTypes from "prop-types";
 
 // --- Animations ---
 const pulseGlow = keyframes`
-  0%, 100% { text-shadow: 0 0 20px rgba(138, 43, 226, 0.4), 0 0 40px rgba(99, 20, 200, 0.2); }
+  0%, 80% { text-shadow: 0 0 20px rgba(138, 43, 226, 0.4), 0 0 40px rgba(99, 20, 200, 0.2); }
   50%       { text-shadow: 0 0 35px rgba(138, 43, 226, 0.8), 0 0 70px rgba(99, 20, 200, 0.5), 0 0 100px rgba(30, 10, 100, 0.3); }
 `;
 
@@ -38,6 +38,7 @@ const Section = styled.section`
   justify-content: center;
   /* Transparent — the fixed blackhole layer in Home.jsx shows through */
   background: transparent;
+  padding-top: 10rem;
 `;
 
 /* Gradient overlay that sits on top of the background image
@@ -170,13 +171,13 @@ const Divider = styled.div`
 /* "REGISTER NOW" button */
 const RegisterButton = styled(Link)`
   display: inline-block;
-  padding: clamp(1.2rem, 2vw, 1.8rem) clamp(3.5rem, 6vw, 7rem);
+  padding: clamp(0.8rem, 1.5vw, 1.2rem) clamp(2rem, 4vw, 4rem);
   background: rgba(25, 10, 80, 0.75);
   border: 2px solid rgba(160, 110, 255, 0.8);
   border-radius: 50rem;
   color: #ffffff;
   font-family: "Poppins", sans-serif;
-  font-size: clamp(1.4rem, 1.8vw, 2rem);
+  font-size: clamp(1rem, 1.5vw, 1.7rem);
   font-weight: 700;
   letter-spacing: 0.25em;
   text-transform: uppercase;

@@ -9,15 +9,14 @@ import circleSpinner from "../../assets/circles.svg";
 
 const Header = styled.header`
   position: fixed;
-  top: 1.5rem;
+  top: 2rem;
   left: 50%;
   transform: translateX(-50%);
   margin-right: 0;
   // width: 75.4rem;
-  padding: 20px;
   // background: ${({ isMobileNavOpen }) =>
     isMobileNavOpen ? "rgba(0, 0, 0, 0.79)" : "transparent"};
-  background: rgba(0, 0, 0, 0.79);
+  background: rgba(46, 49, 92, 0.59);
   border-radius: 3.5rem;
   transition: width 0.2s linear;
   font-family: "Mioge", sans-serif;
@@ -25,7 +24,8 @@ const Header = styled.header`
   justify-content: center;
   align-items: center;
   z-index: 888;
-  padding: 10px;
+  padding-bottom: 10px;
+
 
   @media (max-width: 1040px) {
     left: 0;
@@ -34,7 +34,7 @@ const Header = styled.header`
     transform: none;
     justify-content: space-between;
     padding: 10px;
-    margin: 14px;
+    margin: 15px;
     // overflow:hidden;
   }
 `;
@@ -56,7 +56,7 @@ const Ul = styled(({ mobileNavOpen, ...rest }) => <ul {...rest} />)`
       opacity: 0;
       font-size: 2.6rem;
     }
-    margin-bottom: -23.8rem;
+    margin-bottom: -26.8rem;
 
     ${(props) =>
       props.mobileNavOpen &&
@@ -78,7 +78,7 @@ const Li = styled(({ isActive, ...rest }) => <li {...rest} />)`
   text-transform: uppercase;
   padding-top: 15px;
   text-shadow: 0 0 2px #ffffff, 0 0 3px #d4d4ff, 0 0 4px #a3a3ff,
-    0 0 6px #7171ff;
+    0 0 6px #7b7bfd;
 
   @media (max-width: 1040px) {
     margin-left: 45%;
@@ -88,7 +88,7 @@ const Li = styled(({ isActive, ...rest }) => <li {...rest} />)`
     }
   }
 
-  font-size: 50px;
+  font-size: 25px;
   margin-right: 2.5rem;
   font-weight: 400;
   color: hsla(0, 0%, 100%, 0.5);
@@ -105,7 +105,7 @@ const Li = styled(({ isActive, ...rest }) => <li {...rest} />)`
 
 const ImgLogo = styled.img`
   height: 5.2rem;
-  scale: 2;
+  scale: 10;
   transition: filter 0.2s linear;
   border-radius: 2px;
   display: block;
