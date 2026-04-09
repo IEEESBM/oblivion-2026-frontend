@@ -1,38 +1,34 @@
 import NavBar from "../components/NavBar/NavBar";
 import EventSection from "../components/EventSection/EventSection";
-import MobileHero from "../components/MobileHero/MobileHero";
 import TimerSection from "../components/TimerSection/TimerSection";
 import FAQSection from "../components/FAQSection/FAQSection";
 import GallerySection from "../components/GallerySection/GallerySection";
 import Footer from "../components/Footer/Footer";
 import { useState, useRef } from "react";
-import Spline from "@splinetool/react-spline";
 import styled from "styled-components";
+import blackholeBg from "../assets/blackhole-bg.png";
 
-//smooth scroll
+// Smooth scroll
 import Lenis from "@studio-freight/lenis";
 const lenis = new Lenis();
-
-// lenis.on("scroll", (e) => {
-//   console.log(e);
-// });
-
 function raf(time) {
   lenis.raf(time);
   requestAnimationFrame(raf);
 }
-
 requestAnimationFrame(raf);
-//
 
-const SectionHero = styled.section`
-  height: 100vh;
-  width: 100vw;
-  background-color: #000;
-
-  .ThreeD-scene-hero {
-  }
+// 🌌 Fixed background — stays visible across the ENTIRE page scroll.
+//    To swap the image:  change the import above to point to your new file.
+const FixedBackground = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url(${blackholeBg});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 `;
+
 
 function Home({
   isLoading,
@@ -107,38 +103,23 @@ function Home({
         isLoggedIn={isLoggedIn}
       />
 
-      {!isLoading && (
-        <>
-          <div className="sticky top-0 h-screen -z-10">
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-full object-cover"
-              poster="/bg-preview.jpg"
-            >
-              <source
-                src="https://res.cloudinary.com/drz1xi0a0/video/upload/v1742841458/odyssey_avwg3r.mp4"
-                type="video/mp4"
-              />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-          <TimerSection onIntersection={handleTimerIntersection} />
-          <EventSection
-            ref={eventRef}
-            onIntersection={handleEventIntersection}
-            setInitialEventIndex={setInitialEventIndex}
-          />
-          <FAQSection ref={FAQRef} onIntersection={handleFAQIntersection} />
-          <GallerySection
-            ref={galleryRef}
-            onIntersection={handleGalleryIntersection}
-          />
-          <Footer scrollToHero={scrollToHero} />
-        </>
-      )}
+      {/* Fixed blackhole background — visible during all scroll */}
+      <FixedBackground />
+
+      <div ref={heroRef}>
+        <TimerSection onIntersection={handleTimerIntersection} />
+      </div>
+      <EventSection
+        ref={eventRef}
+        onIntersection={handleEventIntersection}
+        setInitialEventIndex={setInitialEventIndex}
+      />
+      <FAQSection ref={FAQRef} onIntersection={handleFAQIntersection} />
+      <GallerySection
+        ref={galleryRef}
+        onIntersection={handleGalleryIntersection}
+      />
+      <Footer scrollToHero={scrollToHero} />
     </>
   );
 }
