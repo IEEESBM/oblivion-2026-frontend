@@ -123,6 +123,7 @@ const DivEventCard = styled.div`
   }
 `;
 
+
 const EventCardTitle = styled.div`
   font-family: 'Cinzel', serif;
   font-size: 2.5rem;

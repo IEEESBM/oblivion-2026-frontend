@@ -68,3 +68,11 @@ body {
 ::-webkit-scrollbar-thumb {
   background-color: #6649b8;
 }
+.logo {
+  position: fixed;
+  top: 60px;   
+  right: 20px;
+
+  width: 7rem;
+  height: 7rem;
+}

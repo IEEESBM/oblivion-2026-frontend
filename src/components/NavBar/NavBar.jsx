@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import Hamburger from "hamburger-react";
-import logo from "/ODYSSEY.png";
+
 import { useContext, useLayoutEffect, useState } from "react";
 import { UserContext } from "../../App";
 import axios from "axios";
@@ -183,7 +183,7 @@ export default function NavBar({
         <Li className="logo-li ">
           <a onClick={scrollToHero}>
             <h1 className="hover:text-[#16C2D1] lg:hidden   max-[1040px]:text-[40px]">
-              ODYSSEY
+              OBLIVION
             </h1>
           </a>
           <DivHamburger>
