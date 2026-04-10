@@ -1,82 +1,115 @@
-/* Accordion Root Container */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Syne:wght@400;500;600;700&display=swap');
+
+/*  Accordion Root  */
 .AccordionRoot {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 2px;
 }
 
-/* Accordion Item */
+/*  Accordion Item  */
 .AccordionItem {
-  border-radius: 8px;
   overflow: hidden;
+  position: relative;
 }
 
-/* Accordion Header */
+/* Thin left-border accent line */
+.AccordionItem::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(100, 150, 255, 0.8),
+    transparent
+  );
+  box-shadow: 0 0 8px rgba(100, 150, 255, 0.6);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.AccordionItem:has([data-state="open"])::before,
+.AccordionItem:hover::before {
+  opacity: 1;
+}
+
+/*  Accordion Header  */
 .AccordionHeader {
   all: unset;
 }
 
-/* Accordion Trigger (Question) */
+/*  Accordion Trigger  */
 .AccordionTrigger {
   all: unset;
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 16px 20px;
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #e0e0e0;
-  font-size: 15px;
-  font-weight: 500;
+  padding: 20px 20px 20px 22px;
+  background: transparent;
+  color: rgba(200, 215, 255, 0.82);
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(0, 217, 255, 0.2);
+  transition: color 0.25s ease, background 0.25s ease, text-shadow 0.25s ease;
+  border-bottom: 1px solid rgba(80, 100, 180, 0.12);
+  box-sizing: border-box;
+  letter-spacing: 0.4px;
 }
 
 .AccordionTrigger:hover {
-  background-color: rgba(255, 255, 255, 0.12);
-  border-color: rgba(0, 217, 255, 0.4);
+  color: rgba(220, 235, 255, 1);
+  background: rgba(80, 100, 200, 0.07);
+  text-shadow: 0 0 18px rgba(140, 170, 255, 0.45);
 }
 
 .AccordionTrigger[data-state="open"] {
-  background-color: rgba(0, 217, 255, 0.15);
-  border-color: rgba(0, 217, 255, 0.5);
+  color: #ffffff;
+  background: rgba(70, 100, 220, 0.12);
+  border-bottom-color: transparent;
+  text-shadow: 0 0 22px rgba(140, 180, 255, 0.6), 0 0 8px rgba(100, 150, 255, 0.35);
 }
 
 .TriggerText {
   text-align: left;
   flex: 1;
-  letter-spacing: 0.3px;
 }
 
-/* Accordion Chevron Icon */
+/*  Chevron  */
 .AccordionChevron {
-  width: 20px;
-  height: 20px;
-  color: #00d9ff;
+  width: 18px;
+  height: 18px;
+  color: rgba(100, 150, 255, 0.65);
   flex-shrink: 0;
-  margin-left: 12px;
-  transition: transform 0.3s ease;
+  margin-left: 16px;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s ease, filter 0.25s ease;
 }
 
 .AccordionTrigger[data-state="open"] .AccordionChevron {
   transform: rotate(180deg);
+  color: rgba(140, 180, 255, 1);
+  filter: drop-shadow(0 0 6px rgba(140, 180, 255, 0.8));
 }
 
-/* Accordion Content */
+/*Accordion Content */
 .AccordionContent {
   overflow: hidden;
-  animation: slideDown 0.3s ease;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 0 0 8px 8px;
-  border: 1px solid rgba(0, 217, 255, 0.15);
-  border-top: none;
+  background: rgba(40, 50, 100, 0.08);
+  border-bottom: 1px solid rgba(80, 100, 180, 0.12);
+}
+
+.AccordionContent[data-state="open"] {
+  animation: slideDown 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .AccordionContent[data-state="closed"] {
-  animation: slideUp 0.3s ease;
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes slideDown {
@@ -86,14 +119,14 @@
   }
   to {
     opacity: 1;
-    max-height: 500px;
+    max-height: 300px;
   }
 }
 
 @keyframes slideUp {
   from {
     opacity: 1;
-    max-height: 500px;
+    max-height: 300px;
   }
   to {
     opacity: 0;
@@ -101,16 +134,18 @@
   }
 }
 
-/* Accordion Content Text */
+/*Content Text*/
 .AccordionContentText {
-  padding: 16px 20px;
-  color: #c0c0c0;
-  font-size: 14px;
-  line-height: 1.6;
+  padding: 16px 20px 20px 22px;
+  color: rgba(170, 195, 240, 0.82);
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.75;
   letter-spacing: 0.2px;
 }
 
-/* FAQ Section */
+/*FAQ Section Wrappers */
 .FAQSection {
   width: 100%;
   display: flex;
@@ -129,21 +164,21 @@
   display: none;
 }
 
-/* Responsive adjustments */
+/*Responsive design*/
 @media (max-width: 760px) {
   .AccordionTrigger {
-    padding: 14px 16px;
-    font-size: 14px;
+    padding: 16px 14px 16px 16px;
+    font-size: 13px;
   }
 
   .AccordionContentText {
-    padding: 14px 16px;
+    padding: 14px 14px 18px 16px;
     font-size: 13px;
   }
 
   .AccordionChevron {
-    width: 18px;
-    height: 18px;
-    margin-left: 10px;
+    width: 14px;
+    height: 14px;
+    margin-left: 12px;
   }
 }
