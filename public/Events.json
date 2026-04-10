@@ -12,9 +12,9 @@
     ],
     "Date": "11/04/2026",
     "Time": "6pm to 8pm",
-    "Venue": "AB5 312",
-    "Team Size": "1-2",
-    "Prize Pool": 4000,
+    "Venue": "Offline",
+    "Team Size": "Individual",
+    "Prize Pool": 6000,
     "isIndividual": false,
     "ShortDesc": "A fast-paced DSA battleground - attack, defend, steal points, outsmart rivals, and dominate the leaderboard or collapse"
   },
@@ -30,10 +30,10 @@
       "4. Outlast the Collapse – Combine logic and creativity to stand out and win!"
     ],
     "Date": "12/03/2026",
-    "Time": "29th Mar 11:59pm to 31st Mar 11:59pm",
+    "Time": "5:30 - 8:30 PM",
     "Venue": "Online",
-    "Team Size": "1-3",
-    "Prize Pool": 4000,
+    "Team Size": "1-2",
+    "Prize Pool": 5000,
     "isIndividual": false,
     "ShortDesc": "Follow the faint signal CTF style, rebuild the system from the ruins, and assemble something that proves you can outlast the web’s collapse."
   },
@@ -50,7 +50,7 @@
     ],
     "Date": "12/04/2026",
     "Time": "5:30pm to 7:30pm",
-    "Venue": "Online",
+    "Venue": "Offline",
     "Team Size": "Individual",
     "isIndividual": true,
     "ShortDesc": "Learn the fundamentals of building intelligent agents to reason through uncertainty."
@@ -66,11 +66,11 @@
       "3. Adapt to Change – Handle mid-game drift where system agents shift behavior unpredictably.\n",
       "4. Outsmart the System – Balance trust, risk, and strategy to maximize resources and win!"
     ],
-    "Date": "30/03/2025 to 1/04/2025",
-    "Time": "30th Mar 11:59pm to 1st Apr",
+    "Date": "13/04/2026",
+    "Time": "will be updated",
     "Venue": "Online",
     "Team Size": "Individual",
-    "Prize Pool": 4000,
+    "Prize Pool": 6000,
     "isIndividual": true,
     "ShortDesc": "Train models to balance strategy and betrayal in a high-stakes resource management gamble"
   },
@@ -85,11 +85,11 @@
       "3. Hardware Round – Build a functional Morse code generator using electronic components.\n",
       "4. Think, Design & Build – Progress from theory to simulation to real-world execution to claim victory!"
     ],
-    "Date": "R1-(29/03/2025) R2-(31/03/2025)",
+    "Date": "13/04/2026",
     "Time": "R1-(9pm to 10pm) R2-(11am to 2pm)\n",
-    "Venue": "R1-(Online) R2-(Offline)\n",
+    "Venue": "AB5\n",
     "Team Size": "2-3",
-    "Prize Pool": 5000,
+    "Prize Pool": 6000,
     "isIndividual": false,
     "ShortDesc": "In the final blackout, engineer, decode, and revive dying signals before silence consumes the grid"
   },
@@ -97,11 +97,11 @@
     "ID": 500,
     "Name": "DOOMscroll",
     "Desc": "Apocalypse Feed is a creative storytelling event where participants create and run a real Instagram handle to depict a fictional disaster scenario. Using exactly 3 posts and at least 1 reel, they must show a clear progression—from early signs to chaos to aftermath—through visuals, captions, and overall page aesthetic, turning their account into an engaging narrative of the apocalypse meant for public awareness. The event focuses on creativity, storytelling, and social media execution, with judging based on originality, story progression, content quality, and Instagram branding. Participants must create a new public account during the event and submit the handle link for evaluation. This format keeps the event simple, immersive, and highly engaging while fitting perfectly with the apocalypse theme.",
-    "Date": "01/04/2025",
+    "Date": "14/04/2026",
     "Time": "5pm to 8:30pm",
     "Venue": "Offline",
     "Team Size": "2-3",
-    "Prize Pool": 5000,
+    "Prize Pool": 4000,
     "isIndividual": false,
     "ShortDesc": "Transform a random catastrophe into a haunting, immersive digital narrative."
   },
@@ -116,10 +116,10 @@
       "3. Think & React – Combine logic, teamwork, and quick decision-making.\n",
       "4. Race to Victory – Outsmart the competition and claim the prize!"
     ],
-    "Date": "31/03/2025",
+    "Date": "15/04/2026",
     "Time": "4pm to 7:30pm",
     "Venue": "MIT Campus",
-    "Team Size": "3-4",
+    "Team Size": "2-4",
     "Prize Pool": 6000,
     "isIndividual": false,
     "ShortDesc": "Conquer a murder mystery and an escape room in the ultimate multi-skill trial."
