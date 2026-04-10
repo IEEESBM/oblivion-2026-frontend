@@ -15,7 +15,7 @@
     "Venue": "Offline",
     "Team Size": "Individual",
     "Prize Pool": 6000,
-    "isIndividual": false,
+    "isIndividual": true,
     "ShortDesc": "A fast-paced DSA battleground - attack, defend, steal points, outsmart rivals, and dominate the leaderboard or collapse"
   },
   {
