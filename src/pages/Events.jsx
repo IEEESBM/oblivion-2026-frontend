@@ -731,7 +731,7 @@ const Events = ({ toggleLoginSignup }) => {
               <div style={{ display: "flex" }}>
                 Registered |
                 <a
-                  href="https://chat.whatsapp.com/BbCbwvsKCLZ2qO5iDk6eaZ"
+                  href="https://chat.whatsapp.com/LWgiPYFRHCgEpomIXW2EEO"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
