@@ -36,22 +36,23 @@ const Section = styled.section`
 const OrbitStage = styled.div`
   position: relative;
   width: 100%;
-  /* orbit centre sits at top: RADIUS px inside the stage */
-  height: 1040px;
+  /* desktop: 2*460 + 576 = 1496 → 1500px */
+  height: 1500px;
 
-  @media (max-width: 900px) { height: 780px; }
-  @media (max-width: 600px) { height: 640px; }
+  /* tablet ≤900px: 2*340 + 432 = 1112 → 1120px */
+  @media (max-width: 900px) { height: 1120px; }
+
+  /* mobile ≤600px: 2*220 + 320 = 760 → 780px */
+  @media (max-width: 600px) { height: 780px; }
 `;
 
-/* The orbit pivot sits at vertical centre of the stage */
 const Orbit = styled.div`
   position: absolute;
   left: 50%;
-  /* centre = half of stage height */
-  top: 520px;
+  top: 750px;
 
-  @media (max-width: 900px) { top: 390px; }
-  @media (max-width: 600px) { top: 320px; }
+  @media (max-width: 900px) { top: 560px; }
+  @media (max-width: 600px) { top: 390px; }
 `;
 
 // ─── Card ──────────────────────────────────────────────────────────────────────
@@ -62,9 +63,24 @@ const DivEventCard = styled.div`
   flex-direction: column;
   justify-content: space-between;
 
+  /* desktop: 30rem × 36rem = 480px × 576px */
   width: 30rem;
   height: 36rem;
   padding: 2.5rem;
+
+  /* tablet: 27rem × 27rem = 432px × 432px */
+  @media (max-width: 900px) {
+    width: 27rem;
+    height: 27rem;
+    padding: 1.75rem;
+  }
+
+  /* mobile: 20rem × 20rem = 320px × 320px */
+  @media (max-width: 600px) {
+    width: 20rem;
+    height: 20rem;
+    padding: 1.25rem;
+  }
 
   border-radius: 1.25rem;
 
@@ -79,7 +95,6 @@ const DivEventCard = styled.div`
   will-change: transform;
   cursor: pointer;
 
-  /* inner top-edge shimmer line */
   &::before {
     content: '';
     position: absolute;
@@ -117,13 +132,14 @@ const EventCardTitle = styled.div`
   line-height: 1.2;
   margin-top: 1rem;
   text-align: center;
-
-  /* layered glow: tight white core + wide purple halo */
   text-shadow:
     0 0 8px rgba(255, 255, 255, 0.95),
     0 0 20px rgba(180, 140, 255, 0.85),
     0 0 45px rgba(130, 80, 255, 0.6),
     0 0 90px rgba(99, 60, 220, 0.35);
+
+  @media (max-width: 900px) { font-size: 1.8rem; margin-top: 0.5rem; }
+  @media (max-width: 600px) { font-size: 1.3rem; margin-top: 0.25rem; }
 `;
 
 const EventCardBody = styled.div`
@@ -132,6 +148,9 @@ const EventCardBody = styled.div`
   font-weight: 500;
   line-height: 1.55;
   color: rgba(220, 215, 255, 0.88);
+
+  @media (max-width: 900px) { font-size: 1.2rem; }
+  @media (max-width: 600px) { font-size: 0.85rem; line-height: 1.4; }
 `;
 
 const EventCardFooter = styled.div`
@@ -148,11 +167,12 @@ const EventDate = styled.div`
   font-weight: 700;
   letter-spacing: 0.06em;
   color: rgba(180, 160, 255, 0.95);
-
-  /* subtle glow on the date too */
   text-shadow:
     0 0 10px rgba(160, 120, 255, 0.7),
     0 0 28px rgba(120, 80, 220, 0.4);
+
+  @media (max-width: 900px) { font-size: 1.1rem; }
+  @media (max-width: 600px) { font-size: 0.8rem; letter-spacing: 0.03em; }
 `;
 
 const ExpandEventButton = styled.button`
@@ -171,6 +191,9 @@ const ExpandEventButton = styled.button`
   transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   box-shadow: 0 0 10px rgba(99, 60, 220, 0.25);
 
+  @media (max-width: 900px) { width: 2.5rem; height: 2.5rem; font-size: 1rem; }
+  @media (max-width: 600px) { width: 2rem;   height: 2rem;   font-size: 0.8rem; }
+
   &:hover {
     background: rgba(99, 60, 220, 0.75);
     border-color: rgba(180, 140, 255, 0.95);
@@ -188,7 +211,7 @@ const NavRow = styled.div`
   justify-content: center;
   gap: 1rem;
   height: 2.5rem;
-  margin-top: 5rem;
+  margin-top: 0rem;
   /* no absolute positioning — it's a flex child of Section */
 `;
 
@@ -227,14 +250,16 @@ const NavArrow = styled.button`
 // ─── Constants ─────────────────────────────────────────────────────────────────
 
 // radius is the orbit radius in px (distance from pivot to card centre)
-const RADII = { desktop: 360, tablet: 270, mobile: 210 };
+const RADII = { desktop: 460, tablet: 340, mobile: 220 };
 
-// card half-sizes in px — must stay in sync with the rem values above
-// (30rem @ 16px = 480px wide, 36rem = 576px tall → half = 240 x 288)
+// half card sizes in px — synced with rem values in DivEventCard above
+// desktop: 30rem=480px, 36rem=576px → half: 240 × 288
+// tablet:  27rem=432px, 27rem=432px → half: 216 × 216
+// mobile:  20rem=320px, 20rem=320px → half: 160 × 160
 const CARD_SIZES = {
   desktop: { w: 240, h: 288 },
-  tablet:  { w: 168, h: 216 },
-  mobile:  { w: 144, h: 184 },
+  tablet:  { w: 216, h: 216 },
+  mobile:  { w: 160, h: 160 },
 };
 
 const ACTIVE_ANGLE = Math.PI / 2; // front card sits at bottom of orbit
