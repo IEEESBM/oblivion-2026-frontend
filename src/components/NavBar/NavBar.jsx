@@ -12,10 +12,6 @@ const Header = styled.header`
   top: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  margin-right: 0;
-  // width: 75.4rem;
-  // background: ${({ isMobileNavOpen }) =>
-    isMobileNavOpen ? "rgba(0, 0, 0, 0.79)" : "transparent"};
   background: rgba(46, 49, 92, 0.59);
   border-radius: 3.5rem;
   transition: width 0.2s linear;
@@ -26,16 +22,13 @@ const Header = styled.header`
   z-index: 888;
   padding-bottom: 10px;
 
-
   @media (max-width: 1040px) {
     left: 0;
     width: 93%;
-    // background: rgba(0, 0, 0, 0.79);
     transform: none;
     justify-content: space-between;
     padding: 10px;
     margin: 15px;
-    // overflow:hidden;
   }
 `;
 
@@ -43,19 +36,23 @@ const Ul = styled(({ mobileNavOpen, ...rest }) => <ul {...rest} />)`
   max-width: 100%;
   height: 100%;
   display: flex;
-  gap: 3rem; //for mobile nav
+  gap: 3rem;
   list-style: none;
   align-items: center;
   justify-content: space-between;
   transition: margin 0.2s linear;
 
   @media (max-width: 1040px) {
+    width: 100%;
     flex-direction: column;
+    align-items: flex-start;
+
     li:not(:first-child) {
       visibility: hidden;
       opacity: 0;
       font-size: 2.6rem;
     }
+    /* collapses all items except the first (logo-li) */
     margin-bottom: -26.8rem;
 
     ${(props) =>
@@ -80,14 +77,6 @@ const Li = styled(({ isActive, ...rest }) => <li {...rest} />)`
   text-shadow: 0 0 2px #ffffff, 0 0 3px #d4d4ff, 0 0 4px #a3a3ff,
     0 0 6px #7b7bfd;
 
-  @media (max-width: 1040px) {
-    margin-left: 45%;
-    padding-top: 0;
-    &.logo-li {
-      margin-left: 65%;
-    }
-  }
-
   font-size: 25px;
   margin-right: 2.5rem;
   font-weight: 400;
@@ -101,6 +90,23 @@ const Li = styled(({ isActive, ...rest }) => <li {...rest} />)`
   }
 
   color: ${(props) => (props.isActive ? "#fff" : "")};
+
+  /* ── Mobile overrides ── */
+  @media (max-width: 1040px) {
+    padding-top: 0;
+    margin-right: 0;
+
+    /* Non-logo items: indent slightly from left */
+    margin-left: 3rem;
+
+    /* Logo-li: span full width so OBLIVION + hamburger can sit at opposite ends */
+    &.logo-li {
+      width: 100%;
+      margin-left: 0;
+      justify-content: space-between;
+      padding: 0 0.5rem 0 1rem;
+    }
+  }
 `;
 
 const ImgLogo = styled.img`
@@ -122,18 +128,19 @@ const DivHamburger = styled.div`
   visibility: hidden;
   display: none;
   opacity: 0;
+
   @media (max-width: 1040px) {
     display: flex;
     align-items: center;
     justify-content: center;
-    // justify-content: flex-end;
     visibility: visible;
     opacity: 1;
-    // padding:12px;
-    margin-left: 18%;
-    margin-right: 10px;
-    margin-bottom: 10px;
+    /* FIX: removed the 18% left margin that was pushing it off-screen */
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
     color: #fff;
+    flex-shrink: 0;
   }
 `;
 
@@ -150,6 +157,7 @@ export default function NavBar({
 }) {
   const { setUser } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
+
   const handleLogout = async function () {
     setIsLoading(true);
     try {
@@ -165,24 +173,24 @@ export default function NavBar({
       setIsLoading(false);
     }
   };
+
   const [isLargeScreen, setIsLargeScreen] = useState(false);
   useLayoutEffect(() => {
     const handleResize = () => {
       setIsLargeScreen(window.innerWidth >= 1040);
     };
-
     handleResize();
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
     <Header isMobileNavOpen={isMobileNavOpen}>
       <Ul mobileNavOpen={isMobileNavOpen}>
-        <Li className="logo-li ">
+        {/* ── Logo / mobile top bar ── */}
+        <Li className="logo-li">
           <a onClick={scrollToHero}>
-            <h1 className="hover:text-[#16C2D1] lg:hidden   max-[1040px]:text-[40px]">
+            <h1 className="hover:text-[#16C2D1] lg:hidden max-[1040px]:text-[40px]">
               OBLIVION
             </h1>
           </a>
@@ -194,26 +202,24 @@ export default function NavBar({
             />
           </DivHamburger>
         </Li>
-        <Li
-          onClick={scrollToEvent}
-          isActive={visibleSection === "EventSection"}
-        >
+
+        <Li onClick={scrollToEvent} isActive={visibleSection === "EventSection"}>
           Events
         </Li>
         <Li onClick={scrollToFAQ} isActive={visibleSection === "FAQSection"}>
           FAQ
         </Li>
+
         {isLargeScreen && (
           <Li onClick={scrollToHero}>
-            <h1 className="hover:text-[#16C2D1] ">OBLIVION</h1>
+            <h1 className="hover:text-[#16C2D1]">OBLIVION</h1>
           </Li>
         )}
-        <Li
-          onClick={scrollToGallery}
-          isActive={visibleSection === "GallerySection"}
-        >
+
+        <Li onClick={scrollToGallery} isActive={visibleSection === "GallerySection"}>
           Gallery
         </Li>
+
         <Li>
           {!isLoggedIn && (
             <div

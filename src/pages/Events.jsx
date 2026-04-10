@@ -14,9 +14,11 @@ import { FaWhatsapp } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
+// ─── FIX: position:relative so absolute children (MobileBackButton) are
+//          contained inside this element instead of floating to the viewport top.
 const EventContainer = styled.div`
+  position: relative;
   font-family: "Montserrat";
-  background-color: #ff0000;
   display: flex;
   flex-direction: row;
   width: 100vw;
@@ -24,14 +26,13 @@ const EventContainer = styled.div`
   background-color: rgba(0, 0, 0, 1);
   background-image: url(${bg});
   background-size: cover;
-  overflow:hidden;
-  font-family: "Montserrat";
+  overflow: hidden;
   @media (max-width: 760px) {
     flex-direction: column;
     background-color: #010101;
     min-height: 100vh;
-    height: fit-content;
-    overflow:hidden;
+    height: 100vh;
+    overflow: hidden;
   }
 `;
 
@@ -95,39 +96,37 @@ const EventSidebarButton = styled.button`
 `;
 
 const MobileContainer = styled.div`
-  /* position: absolute; */
-  /* top: 1rem; */
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
 `;
 
 const MobileSelect = styled(Select)`
   font-family: "Montserrat";
-  /* margin: 0 auto; */
-  /* width: 80%; */
   height: 4rem;
   border-radius: 0.75rem;
   color: white;
   text-align: center;
   font-size: 2rem;
-  margin: 7rem auto 0 auto;
+  /* FIX: reduced from 7rem — the floating logo that needed this space is now hidden */
+  margin: 2.5rem auto 0 auto;
   display: block;
   padding-left: 2.2rem;
 `;
 
 const MobileBackButton = styled.button`
   position: absolute;
-  /* top: 32%; */
   left: 5%;
   border: 1px solid rgb(7, 74, 71);
   border-radius: 4rem;
   background-color: rgb(122, 185, 227);
   height: 3.5rem;
   width: 3.5rem;
+  /* FIX: now positioned relative to EventContainer (position:relative),
+     so top:2rem means 2rem from the actual top of the page — correct. */
   top: 2rem;
-
   box-shadow: 0 0 0.5rem 0.5rem rgba(0, 0, 0, 0.5);
 `;
 
@@ -142,7 +141,6 @@ const EventBackButton = styled.button`
   margin-bottom: 2rem;
   background-color: rgba(0, 0, 0, 0);
   color: #16c2d1;
-  /* font-size: 5rem; */
   font-size: clamp(2.5rem, 2.4vw, 4.4rem);
   text-align: center;
   cursor: pointer;
@@ -167,20 +165,14 @@ const EventContent = styled.div`
   background-color: rgba(0, 0, 0, 0);
   background-size: cover;
   height: 100%;
+  overflow-y: auto;
+  flex: 1;
   @media (max-width: 760px) {
     width: 100%;
-    /* margin: 0 0 0 0; */
     margin-top: 2rem;
-    /* padding: 7rem 3rem 0 3rem; */
     padding-top: 0;
-    /* justify-content: center; Add this line */
     justify-content: start;
     gap: 1.6rem;
-    /*background: linear-gradient(
-      159.14deg,
-      rgba(1, 1, 1, 0.648) -6.84%,
-      rgba(33, 33, 33, 0.443) 118.48%
-    );*/
     padding-bottom: 7rem;
   }
 `;
@@ -218,6 +210,7 @@ const EventRegisteredIndicator = styled.div`
     margin-top: 1.4rem;
   }
 `;
+
 const EventDescriptionBox = styled.div`
   position: relative;
   width: min(100%, 112rem);
@@ -378,7 +371,7 @@ const DivLogoSidebar = styled.div`
 const ImgLogo = styled.img`
   height: 4rem;
   scale: 1.7;
-  margin-top:6rem;
+  margin-top: 6rem;
   margin-bottom: 2.5rem;
   transition: filter 0.2s linear;
   border-radius: 2px;
@@ -389,6 +382,9 @@ const ImgLogo = styled.img`
   }
 `;
 
+// FIX: On mobile this was `position: absolute; top: -1rem` with no positioned
+// parent, so it escaped to the viewport top and appeared as a white Oblivion
+// bar covering the page. Hide it on mobile — the back button handles navigation.
 const MobileImgLogo = styled.img`
   position: absolute;
   top: 0;
@@ -398,7 +394,7 @@ const MobileImgLogo = styled.img`
   transition: filter 0.2s linear;
   display: block;
   @media (max-width: 760px) {
-    top: -1rem;
+    display: none;
   }
 `;
 
@@ -421,6 +417,7 @@ const DivBottomContainer = styled.div`
     margin-top: 0;
   }
 `;
+
 const EventRegisterButton = styled.button`
   width: auto;
   min-width: 16rem;
@@ -547,8 +544,6 @@ const ListTeamMembers = styled.ul`
 `;
 
 const AlertDialogBox = styled(AlertDialogPrimitive.Content)`
-  /* width: 60%;
-  height: 35%; */
   background: rgba(141, 115, 255, 0.5);
   border-radius: 2rem;
   padding: 6rem 4rem;
@@ -572,7 +567,6 @@ const AlertDialogBox = styled(AlertDialogPrimitive.Content)`
 const AlertDialogText = styled.div`
   color: #fff;
   font-size: clamp(3rem, 2.5vw, 3.8rem);
-  /* text-align: center; */
   white-space: normal;
   line-height: 1.2;
   @media (max-width: 760px) {
@@ -619,8 +613,8 @@ const Events = ({ toggleLoginSignup }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showCreateTeamForm, setShowCreateTeamForm] = useState(false);
   const [showJoinTeamForm, setShowJoinTeamForm] = useState(false);
-  const [teamName, setTeamName] = useState(""); //for form input
-  const [teamId, setTeamId] = useState(""); //for form input
+  const [teamName, setTeamName] = useState("");
+  const [teamId, setTeamId] = useState("");
   const [joinedTeams, setJoinedTeams] = useState(null);
   const [open, setOpen] = useState(false);
   const { user, setUser } = useContext(UserContext);
@@ -635,19 +629,12 @@ const Events = ({ toggleLoginSignup }) => {
       });
 
     const handleResize = () => {
-      if (window.innerWidth <= 760) {
-        setMobile(true);
-      } else {
-        setMobile(false);
-      }
+      setMobile(window.innerWidth <= 760);
     };
 
     handleResize();
     window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => window.removeEventListener("resize", handleResize);
   }, [linkIndex]);
 
   useEffect(() => {
@@ -672,10 +659,6 @@ const Events = ({ toggleLoginSignup }) => {
     }
   };
 
-  useEffect(() => {
-    fetchEvents();
-  }, [user]);
-
   const handleClick = (index) => {
     setSelectedButton(index);
     setContent(Events[index]);
@@ -685,19 +668,11 @@ const Events = ({ toggleLoginSignup }) => {
     setTeamId("");
   };
 
-  const handleCreateTeamForm = () => {
-    setShowCreateTeamForm((s) => !s);
-  };
-
-  const handleJoinTeamFrom = () => {
-    setShowJoinTeamForm((s) => !s);
-  };
+  const handleCreateTeamForm = () => setShowCreateTeamForm((s) => !s);
+  const handleJoinTeamFrom   = () => setShowJoinTeamForm((s) => !s);
 
   const handleRegister = async function (content) {
-    const payload = {
-      eventId: content.ID,
-      isIndividual: content.isIndividual,
-    };
+    const payload = { eventId: content.ID, isIndividual: content.isIndividual };
     setIsLoading(true);
     try {
       const { data } = await axios.post("/register", payload);
@@ -721,13 +696,10 @@ const Events = ({ toggleLoginSignup }) => {
   };
 
   const generateTeamId = (n) => {
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let result = "";
     for (let i = 0; i < n; i++) {
-      result += characters.charAt(
-        Math.floor(Math.random() * characters.length)
-      );
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
     return result;
   };
@@ -766,10 +738,7 @@ const Events = ({ toggleLoginSignup }) => {
   const handleJoinTeam = async function (e, content) {
     e.preventDefault();
     setIsLoading(true);
-    const payload = {
-      eventId: content.ID,
-      teamId: teamId,
-    };
+    const payload = { eventId: content.ID, teamId: teamId };
     try {
       const { data } = await axios.post("/joinTeam", payload);
       setUser(data);
@@ -841,7 +810,6 @@ const Events = ({ toggleLoginSignup }) => {
           <MobileSelect
             bg="rgba(1,1,1,0.4)"
             icon={<div></div>}
-            // onChange={(e) => setContent(Events[e.target.value])}
             onChange={(e) => handleClick(e.target.value)}
             value={selectedButton}
           >
@@ -855,6 +823,9 @@ const Events = ({ toggleLoginSignup }) => {
               </option>
             ))}
           </MobileSelect>
+          {/* MobileImgLogo intentionally not rendered on mobile — it was
+              position:absolute without a positioned parent and floated to the
+              viewport top, creating the white Oblivion bar. Hidden via CSS. */}
           <MobileImgLogo
             src={logo}
             alt="dreamscape logo"
@@ -867,7 +838,7 @@ const Events = ({ toggleLoginSignup }) => {
           </MobileBackButton>
         </MobileContainer>
       )}
-      <EventContent className="overflow-y-auto">
+      <EventContent>
         <EventHeader>
           <EventTitle>{content && content.Name}</EventTitle>
           <EventRegisteredIndicator>
@@ -880,10 +851,7 @@ const Events = ({ toggleLoginSignup }) => {
                   href="https://chat.whatsapp.com/LWgiPYFRHCgEpomIXW2EEO"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{
-                    color: "rgb(110, 157, 172)",
-                    marginLeft: "1rem",
-                  }}
+                  style={{ color: "rgb(110, 157, 172)", marginLeft: "1rem" }}
                 >
                   <FaWhatsapp />
                 </a>
@@ -908,12 +876,7 @@ const Events = ({ toggleLoginSignup }) => {
                     <EventDetailContainer key={index}>
                       <EventDetailKey>{detail + " - "}</EventDetailKey>{" "}
                       <EventDetailValue>
-                        <pre
-                          style={{
-                            whiteSpace: "pre-wrap",
-                            fontFamily: "inherit",
-                          }}
-                        >
+                        <pre style={{ whiteSpace: "pre-wrap", fontFamily: "inherit" }}>
                           {detail === "Prize Pool" && "\u20B9"}
                           {content[detail]}
                         </pre>
@@ -933,12 +896,7 @@ const Events = ({ toggleLoginSignup }) => {
               {content?.isIndividual && (
                 <EventRegisterButton onClick={() => handleRegister(content)}>
                   {isLoading && (
-                    <img
-                      src={circleSpinner}
-                      width="24"
-                      alt=""
-                      style={{ marginRight: "8px" }}
-                    />
+                    <img src={circleSpinner} width="24" alt="" style={{ marginRight: "8px" }} />
                   )}
                   Register
                 </EventRegisterButton>
@@ -961,12 +919,7 @@ const Events = ({ toggleLoginSignup }) => {
                       />
                       <button type="submit">
                         {isLoading && (
-                          <img
-                            src={circleSpinner}
-                            width="24"
-                            alt=""
-                            style={{ marginRight: "8px" }}
-                          />
+                          <img src={circleSpinner} width="24" alt="" style={{ marginRight: "8px" }} />
                         )}
                         Create
                       </button>
@@ -983,12 +936,7 @@ const Events = ({ toggleLoginSignup }) => {
                       />
                       <button type="submit">
                         {isLoading && (
-                          <img
-                            src={circleSpinner}
-                            width="24"
-                            alt=""
-                            style={{ marginRight: "8px" }}
-                          />
+                          <img src={circleSpinner} width="24" alt="" style={{ marginRight: "8px" }} />
                         )}
                         Join
                       </button>
@@ -1011,45 +959,28 @@ const Events = ({ toggleLoginSignup }) => {
             <>
               <DivTeamTitle>
                 {!content?.isIndividual && "Team: "}
-                {
-                  joinedTeams?.find((team) => team.eventId === content?.ID)
-                    ?.name
-                }
+                {joinedTeams?.find((team) => team.eventId === content?.ID)?.name}
                 {!content?.isIndividual && " | ID: "}
-                {
-                  joinedTeams?.find((team) => team.eventId === content?.ID)
-                    ?.teamId
-                }
-                {user?.event?.find((e) => e.id === content?.ID)
-                  ?.teamIsLeader && (
+                {joinedTeams?.find((team) => team.eventId === content?.ID)?.teamId}
+                {user?.event?.find((e) => e.id === content?.ID)?.teamIsLeader && (
                   <>
                     {" | "}
                     <MdDeleteForever
                       className="btn-delete-team"
                       onClick={() =>
                         handleDeleteTeam(
-                          joinedTeams.find(
-                            (team) => team.eventId === content?.ID
-                          )?.teamId
+                          joinedTeams.find((team) => team.eventId === content?.ID)?.teamId
                         )
                       }
                     />
                   </>
                 )}
                 {isLoading && (
-                  <img
-                    src={circleSpinner}
-                    width="24"
-                    alt=""
-                    style={{ marginRight: "8px" }}
-                  />
+                  <img src={circleSpinner} width="24" alt="" style={{ marginRight: "8px" }} />
                 )}
               </DivTeamTitle>
               <ListTeamMembers>
-                {
-                  joinedTeams?.find((team) => team.eventId === content?.ID)
-                    ?.leader_name
-                }
+                {joinedTeams?.find((team) => team.eventId === content?.ID)?.leader_name}
                 {!isLoading && !content?.isIndividual && " (Leader)"}
                 {joinedTeams
                   ?.find((team) => team.eventId === content?.ID)

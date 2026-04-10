@@ -5,7 +5,6 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Link } from "react-router-dom";
 
-// Google Font import
 const GlobalFont = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Raleway:wght@400;500;600;700&display=swap');
 `;
@@ -24,26 +23,19 @@ const Section = styled.section`
   padding: 4rem 0 3rem;
 `;
 
-/*
-  OrbitStage is a fixed-size box that exactly contains the circular orbit.
-  Height = 2 * radius + card_height  (the full vertical diameter of the orbit)
-  We leave a little breathing room on top/bottom.
-
-  Desktop:  radius=360, card_h=288  → orbit diameter = 360*2 + 288 = 1008px  → ~1040px stage
-  Tablet:   radius=270, card_h=216  → 756 + 216 = 972px  → ~780px (cards scale down via rem)
-  Mobile:   radius=210, card_h=184  → 604px  → ~620px
-*/
 const OrbitStage = styled.div`
   position: relative;
   width: 100%;
+  overflow: hidden;
+
   /* desktop: 2*460 + 576 = 1496 → 1500px */
   height: 1500px;
 
-  /* tablet ≤900px: 2*340 + 432 = 1112 → 1120px */
+  /* tablet ≤900px */
   @media (max-width: 900px) { height: 1120px; }
 
-  /* mobile ≤600px: 2*220 + 320 = 760 → 780px */
-  @media (max-width: 600px) { height: 780px; }
+  /* mobile ≤600px: flat carousel — only needs card height + breathing room */
+  @media (max-width: 600px) { height: 400px; }
 `;
 
 const Orbit = styled.div`
@@ -52,7 +44,8 @@ const Orbit = styled.div`
   top: 750px;
 
   @media (max-width: 900px) { top: 560px; }
-  @media (max-width: 600px) { top: 390px; }
+  /* mobile: centre of the 400px stage */
+  @media (max-width: 600px) { top: 200px; }
 `;
 
 // ─── Card ──────────────────────────────────────────────────────────────────────
@@ -63,23 +56,21 @@ const DivEventCard = styled.div`
   flex-direction: column;
   justify-content: space-between;
 
-  /* desktop: 30rem × 36rem = 480px × 576px */
   width: 30rem;
   height: 36rem;
   padding: 2.5rem;
 
-  /* tablet: 27rem × 27rem = 432px × 432px */
   @media (max-width: 900px) {
     width: 27rem;
     height: 27rem;
     padding: 1.75rem;
   }
 
-  /* mobile: 20rem × 20rem = 320px × 320px */
+  /* mobile: nearly full-width card */
   @media (max-width: 600px) {
-    width: 20rem;
-    height: 20rem;
-    padding: 1.25rem;
+    width: 28rem;
+    height: 28rem;
+    padding: 1.5rem;
   }
 
   border-radius: 1.25rem;
@@ -118,7 +109,6 @@ const DivEventCard = styled.div`
       0 0 30px rgba(99, 60, 220, 0.45),
       0 0 70px rgba(80, 40, 200, 0.2),
       inset 0 0 30px rgba(99, 60, 220, 0.07);
-
     &::before { opacity: 1; }
   }
 `;
@@ -139,7 +129,7 @@ const EventCardTitle = styled.div`
     0 0 90px rgba(99, 60, 220, 0.35);
 
   @media (max-width: 900px) { font-size: 1.8rem; margin-top: 0.5rem; }
-  @media (max-width: 600px) { font-size: 1.3rem; margin-top: 0.25rem; }
+  @media (max-width: 600px) { font-size: 1.7rem; margin-top: 0.5rem; }
 `;
 
 const EventCardBody = styled.div`
@@ -150,7 +140,7 @@ const EventCardBody = styled.div`
   color: rgba(220, 215, 255, 0.88);
 
   @media (max-width: 900px) { font-size: 1.2rem; }
-  @media (max-width: 600px) { font-size: 0.85rem; line-height: 1.4; }
+  @media (max-width: 600px) { font-size: 1.15rem; line-height: 1.45; }
 `;
 
 const EventCardFooter = styled.div`
@@ -172,7 +162,7 @@ const EventDate = styled.div`
     0 0 28px rgba(120, 80, 220, 0.4);
 
   @media (max-width: 900px) { font-size: 1.1rem; }
-  @media (max-width: 600px) { font-size: 0.8rem; letter-spacing: 0.03em; }
+  @media (max-width: 600px) { font-size: 1.1rem; letter-spacing: 0.03em; }
 `;
 
 const ExpandEventButton = styled.button`
@@ -192,7 +182,7 @@ const ExpandEventButton = styled.button`
   box-shadow: 0 0 10px rgba(99, 60, 220, 0.25);
 
   @media (max-width: 900px) { width: 2.5rem; height: 2.5rem; font-size: 1rem; }
-  @media (max-width: 600px) { width: 2rem;   height: 2rem;   font-size: 0.8rem; }
+  @media (max-width: 600px) { width: 2.5rem; height: 2.5rem; font-size: 1rem; }
 
   &:hover {
     background: rgba(99, 60, 220, 0.75);
@@ -203,7 +193,7 @@ const ExpandEventButton = styled.button`
   }
 `;
 
-// ─── Nav — sits BELOW OrbitStage, normal flow ──────────────────────────────────
+// ─── Nav ──────────────────────────────────────────────────────────────────────
 
 const NavRow = styled.div`
   display: flex;
@@ -212,7 +202,6 @@ const NavRow = styled.div`
   gap: 1rem;
   height: 2.5rem;
   margin-top: 0rem;
-  /* no absolute positioning — it's a flex child of Section */
 `;
 
 const NavDot = styled.button`
@@ -249,20 +238,19 @@ const NavArrow = styled.button`
 
 // ─── Constants ─────────────────────────────────────────────────────────────────
 
-// radius is the orbit radius in px (distance from pivot to card centre)
 const RADII = { desktop: 460, tablet: 340, mobile: 220 };
 
-// half card sizes in px — synced with rem values in DivEventCard above
-// desktop: 30rem=480px, 36rem=576px → half: 240 × 288
-// tablet:  27rem=432px, 27rem=432px → half: 216 × 216
-// mobile:  20rem=320px, 20rem=320px → half: 160 × 160
+// Half card sizes in px (synced with rem values above, at 10px base)
+// desktop: 30rem=300px, 36rem=360px → half: 150 × 180
+// tablet:  27rem=270px, 27rem=270px → half: 135 × 135
+// mobile:  28rem=280px, 28rem=280px → half: 140 × 140
 const CARD_SIZES = {
   desktop: { w: 240, h: 288 },
   tablet:  { w: 216, h: 216 },
-  mobile:  { w: 160, h: 160 },
+  mobile:  { w: 140, h: 140 },
 };
 
-const ACTIVE_ANGLE = Math.PI / 2; // front card sits at bottom of orbit
+const ACTIVE_ANGLE = Math.PI / 2;
 
 // ─── Component ─────────────────────────────────────────────────────────────────
 
@@ -270,24 +258,16 @@ const EventSection = () => {
   const [events, setEvents] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const cardRefs    = useRef([]);
-  const radiusRef   = useRef(RADII.desktop);
-  const cardSizeRef = useRef(CARD_SIZES.desktop);
+  const cardRefs      = useRef([]);
+  const radiusRef     = useRef(RADII.desktop);
+  const cardSizeRef   = useRef(CARD_SIZES.desktop);
+  const activeIndexRef = useRef(0);
+
+  // Keep activeIndexRef in sync so resize handler can read current value
+  useEffect(() => { activeIndexRef.current = activeIndex; }, [activeIndex]);
 
   useEffect(() => {
     fetch("/Events.json").then(r => r.json()).then(setEvents);
-  }, []);
-
-  useEffect(() => {
-    const update = () => {
-      const w  = window.innerWidth;
-      const bp = w <= 600 ? "mobile" : w <= 900 ? "tablet" : "desktop";
-      radiusRef.current   = RADII[bp];
-      cardSizeRef.current = CARD_SIZES[bp];
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
   }, []);
 
   const positionCards = useCallback((target) => {
@@ -295,6 +275,7 @@ const EventSection = () => {
     const n = events.length;
     const r = radiusRef.current;
     const { w, h } = cardSizeRef.current;
+    const isMobile = window.innerWidth <= 600;
 
     cardRefs.current.forEach((card, i) => {
       if (!card) return;
@@ -302,17 +283,42 @@ const EventSection = () => {
       let offset = ((i - target) % n + n) % n;
       if (offset > n / 2) offset -= n;
 
-      const angle = ACTIVE_ANGLE + (offset / n) * 2 * Math.PI;
-      const x     = Math.cos(angle) * r - w / 2;
-      const y     = Math.sin(angle) * r - h / 2;
+      let x, y, scale, opacity;
 
-      const scale   = 1 - Math.abs(offset) * 0.08;
-      const opacity = 1 - Math.abs(offset) * 0.15;
+      if (isMobile) {
+        // Flat horizontal carousel: active card centred, others slid off-screen
+        const vw = window.innerWidth;
+        x = offset * (vw * 0.92) - w;
+        y = -h;
+        scale = 1;
+        opacity = offset === 0 ? 1 : 0;
+      } else {
+        // Original orbit layout for tablet + desktop
+        const angle = ACTIVE_ANGLE + (offset / n) * 2 * Math.PI;
+        x = Math.cos(angle) * r - w;
+        y = Math.sin(angle) * r - h;
+        scale   = 1 - Math.abs(offset) * 0.08;
+        opacity = 1 - Math.abs(offset) * 0.15;
+      }
 
-      gsap.to(card, { x, y, scale, opacity, duration: 0.5, ease: "power2.out" });
+      gsap.to(card, { x, y, scale, opacity, duration: 0.45, ease: "power2.out" });
       card.classList.toggle("is-active", i === target);
     });
   }, [events]);
+
+  useEffect(() => {
+    const update = () => {
+      const ww = window.innerWidth;
+      const bp = ww <= 600 ? "mobile" : ww <= 900 ? "tablet" : "desktop";
+      radiusRef.current   = RADII[bp];
+      cardSizeRef.current = CARD_SIZES[bp];
+      // Re-position all cards whenever viewport changes
+      positionCards(activeIndexRef.current);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [positionCards]);
 
   useGSAP(() => { positionCards(activeIndex); }, [activeIndex, events]);
 
@@ -325,7 +331,6 @@ const EventSection = () => {
     <>
       <GlobalFont />
       <Section>
-        {/* ── Orbit ── */}
         <OrbitStage>
           <Orbit>
             {events.map((event, i) => (
@@ -352,7 +357,6 @@ const EventSection = () => {
           </Orbit>
         </OrbitStage>
 
-        {/* ── Nav — below orbit, in normal flex flow ── */}
         <NavRow>
           <NavArrow onClick={prev}>‹</NavArrow>
           {events.map((_, i) => (

@@ -4,11 +4,6 @@ import { useInView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-
-// 🌌 The blackhole background is a fixed layer rendered in Home.jsx.
-//    It persists across all sections during scroll.
-//    See Home.jsx → <FixedBackground> to change the image.
-
 // --- Animations ---
 const pulseGlow = keyframes`
   0%, 80% { text-shadow: 0 0 20px rgba(138, 43, 226, 0.4), 0 0 40px rgba(99, 20, 200, 0.2); }
@@ -36,13 +31,10 @@ const Section = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* Transparent — the fixed blackhole layer in Home.jsx shows through */
   background: transparent;
   padding-top: 10rem;
+  overflow-x: hidden;
 `;
-
-// Overlay removed — the vignette is baked into <FixedBackground> in Home.jsx.
-// A single overlay element across the whole page guarantees zero seams.
 
 const Content = styled.div`
   position: relative;
@@ -53,6 +45,8 @@ const Content = styled.div`
   gap: 3.2rem;
   padding: 2rem 2rem 4rem;
   animation: ${fadeUp} 0.9s ease both;
+  width: 100%;
+  max-width: 100%;
 `;
 
 const EventLabel = styled.p`
@@ -84,10 +78,16 @@ const EventTitle = styled.h1`
 const TimerRow = styled.div`
   display: flex;
   align-items: flex-start;
+  justify-content: center;
   gap: clamp(1.2rem, 2.5vw, 3.5rem);
 
   @media (max-width: 480px) {
     gap: 0.8rem;
+  }
+
+  /* Extra tight on very small phones */
+  @media (max-width: 400px) {
+    gap: 0.4rem;
   }
 `;
 
@@ -97,6 +97,15 @@ const TimerUnit = styled.div`
   align-items: center;
   gap: 0.8rem;
   min-width: clamp(6rem, 12vw, 16rem);
+
+  @media (max-width: 480px) {
+    min-width: clamp(5rem, 13vw, 8rem);
+  }
+
+  @media (max-width: 400px) {
+    min-width: clamp(4rem, 11vw, 6rem);
+    gap: 0.4rem;
+  }
 `;
 
 const Digit = styled.span`
@@ -115,6 +124,11 @@ const Digit = styled.span`
   @media (max-width: 480px) {
     font-size: clamp(5rem, 18vw, 8rem);
   }
+
+  /* Significantly smaller on tiny phones to prevent overflow */
+  @media (max-width: 400px) {
+    font-size: clamp(4rem, 13vw, 6rem);
+  }
 `;
 
 const UnitLabel = styled.span`
@@ -124,9 +138,13 @@ const UnitLabel = styled.span`
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.45);
+
+  @media (max-width: 400px) {
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+  }
 `;
 
-/* The colon separator between units */
 const Separator = styled.span`
   font-family: "Poppins", sans-serif;
   font-size: clamp(4.5rem, 10vw, 13rem);
@@ -140,9 +158,12 @@ const Separator = styled.span`
   @media (max-width: 480px) {
     font-size: clamp(3.5rem, 12vw, 6rem);
   }
+
+  @media (max-width: 400px) {
+    font-size: clamp(3rem, 10vw, 5rem);
+  }
 `;
 
-/* Thin horizontal rule under the timer */
 const Divider = styled.div`
   width: clamp(28rem, 60vw, 90rem);
   height: 1px;
@@ -154,9 +175,12 @@ const Divider = styled.div`
     rgba(160, 100, 255, 0.5) 70%,
     transparent
   );
+
+  @media (max-width: 400px) {
+    width: 90%;
+  }
 `;
 
-/* "REGISTER NOW" button */
 const RegisterButton = styled(Link)`
   display: inline-block;
   padding: clamp(0.8rem, 1.5vw, 1.2rem) clamp(2rem, 4vw, 4rem);
@@ -196,8 +220,8 @@ function getTimeLeft() {
   const distance = EVENT_DATE - Date.now();
   if (distance <= 0) return { days: "00", hours: "00", minutes: "00", seconds: "00" };
   return {
-    days: pad(Math.floor(distance / (1000 * 60 * 60 * 24))),
-    hours: pad(Math.floor((distance / (1000 * 60 * 60)) % 24)),
+    days:    pad(Math.floor(distance / (1000 * 60 * 60 * 24))),
+    hours:   pad(Math.floor((distance / (1000 * 60 * 60)) % 24)),
     minutes: pad(Math.floor((distance / (1000 * 60)) % 60)),
     seconds: pad(Math.floor((distance / 1000) % 60)),
   };
@@ -217,8 +241,8 @@ function TimerSection({ onIntersection }) {
   }, []);
 
   const units = [
-    { value: time.days, label: "Days" },
-    { value: time.hours, label: "Hours" },
+    { value: time.days,    label: "Days" },
+    { value: time.hours,   label: "Hours" },
     { value: time.minutes, label: "Minutes" },
     { value: time.seconds, label: "Seconds" },
   ];
@@ -234,7 +258,6 @@ function TimerSection({ onIntersection }) {
           {units.map((unit, i) => (
             <React.Fragment key={unit.label}>
               <TimerUnit>
-                {/* key={unit.value} re-mounts Digit on every tick → plays digitFlip animation */}
                 <Digit key={unit.value}>{unit.value}</Digit>
                 <UnitLabel>{unit.label}</UnitLabel>
               </TimerUnit>
@@ -250,7 +273,9 @@ function TimerSection({ onIntersection }) {
     </Section>
   );
 }
+
 TimerSection.propTypes = {
   onIntersection: PropTypes.func,
 };
+
 export default TimerSection;
