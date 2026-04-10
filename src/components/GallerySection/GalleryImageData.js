@@ -6,8 +6,8 @@ export const galleryImages = [
    },
    {
       ID: 2,
-      url: "../../../hackathon.jpg",
-      altText: "hackathon",
+      url: "../../../WhatsApp-img-1.jpg",
+      altText: "techweek",
    },
    {
       ID: 3,
@@ -16,8 +16,8 @@ export const galleryImages = [
    },
    {
       ID: 4,
-      url: "../../../WhatsApp-img-1.jpg",
-      altText: "wa-img1",
+      url: "../../../KSV01091.jpg",
+      altText: "DEV RUSH",
    },
    {
       ID: 5,
