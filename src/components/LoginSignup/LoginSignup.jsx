@@ -212,11 +212,7 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                   )}
                   Login
                 </button>
-                <p className="mb-0 mt-3 text-center">
-                  <span className="link" onClick={handleForgotPasswordWithToast}>
-                    Forgot password?
-                  </span>
-                </p>
+                
               </form>
             </div>
 
