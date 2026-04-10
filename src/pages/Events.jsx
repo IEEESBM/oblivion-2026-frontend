@@ -1071,7 +1071,7 @@ const Events = ({ toggleLoginSignup }) => {
           <AlertDialogText>
             To complete registration, please join our whatsapp group{" "}
             <a
-              href="https://chat.whatsapp.com/BbCbwvsKCLZ2qO5iDk6eaZ"
+              href="https://chat.whatsapp.com/LWgiPYFRHCgEpomIXW2EEO"
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: "white" }}

@@ -183,7 +183,7 @@ export default function NavBar({
         <Li className="logo-li ">
           <a onClick={scrollToHero}>
             <h1 className="hover:text-[#16C2D1] lg:hidden   max-[1040px]:text-[40px]">
-              ODYSSEY
+              OBLIVION
             </h1>
           </a>
           <DivHamburger>
