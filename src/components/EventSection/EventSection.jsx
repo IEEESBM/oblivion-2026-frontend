@@ -1,288 +1,247 @@
-import { styled, keyframes } from "styled-components";
-import React, { useRef, useState, useEffect } from "react";
+import { styled } from "styled-components";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { MdArrowOutward } from "react-icons/md";
 import { useInView } from "react-intersection-observer";
-
-//gsap imports
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import ScrollTrigger from "gsap/ScrollTrigger";
 import { Link } from "react-router-dom";
-gsap.registerPlugin(ScrollTrigger);
+
+// Styled Components
 
 const Section = styled.section`
-  margin-top: -40vh;
-  padding-bottom: 10rem;   /* ✅ ADD THIS */
-
-  @media (max-width: 760px) {
-    padding: 0 0 10rem 0;
-    margin-top: -50vh;
-  }
-`;
-
-const DivScrolling = styled.div`
-  overflow-x: hidden;
-  padding-bottom: 4rem;  /* ✅ add this */
-`;
-
-const Div = styled.div`
-  /* margin-top: 16rem; */
-  margin-top: max(30rem, calc((100vh - 44rem) / 2));
-  margin-left: 50vw;
-  margin-bottom: 6rem; 
-  width: fit-content;
-  display: flex;
-  justify-content: center;
-  gap: 7.5rem;
-
-  @media (max-width: 760px) {
-    margin-left: 0;
-    width: 100%;
-    padding: 0 1.8rem;
-    flex-direction: column;
-    justify-content: center;
-    gap: 10rem;
-    height: fit-content;
-    overflow: hidden;
-  }
-`;
-/*
-const DivEventCard = styled.div`
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 42rem;
-  height: 44rem;
-
-  background: ${({ alternate }) =>
-    alternate
-      ? "linear-gradient(159.14deg, #7179ecb9 -6.84%, #212121 118.48%)"
-      : "linear-gradient(159.14deg, #010101 -6.84%, #212121 118.48%)"};
-
-  border-radius: 1rem;
-  border: 1px solid rgba(170, 170, 170, 0.6);
-  @media (max-width: 760px) {
-    width: 100%;
-    height: 48rem;
-    padding: 2rem 2rem 0 2rem;
-  }
-    opacity:0.85;
-  padding: 3rem 3rem 0 3rem;
-  backdrop-filter: blur(2px);
-`;
-*/
-
-const DivEventCard = styled.div`
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  width: 42rem;
-  height: 44rem;
-
-  padding: 3rem;
-
-  border-radius: 4.5rem;
-
-  background: ${({ alternate }) =>
-    alternate
-      ? "linear-gradient(160deg, rgba(138,43,226,0.25), rgba(0,0,0,0.9))"
-      : "linear-gradient(160deg, rgba(0,0,0,0.9), rgba(30,30,30,0.9))"};
-
-  border: 1px solid rgba(255,255,255,0.1);
-  backdrop-filter: blur(10px);
-
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 0 15px rgba(129, 29, 223, 0.3);
-    border: 1px solid rgba(138, 43, 226, 0.6);
-  }
-
-  @media (max-width: 760px) {
-    width: 100%;
-    height: 48rem;
-  }
-`;
-
-
-const EventCardTitle = styled.div`
-  font-size: 3rem;
-  margin-bottom:2.5rem;
-  font-weight: 300;
-  
-  color: #e6caff;
-  text-shadow: 0 0 8px rgba(230, 202, 255, 0.5), 0 0 16px rgba(138, 43, 226, 0.15);
-  @media (max-width: 760px) {
-    font-size: 4rem;
-    margin-bottom:1rem;
-  }
-`;
-
-const EventCardBody = styled.div`
-  font-size: 2rem;
-  line-height: 1.4;
-  font-weight: 500;
-  word-wrap: wrap;
-  color: white;
-  @media (max-width: 760px) {
-    font-size: 2.0rem;
-    line-height: 1.4;
-  }
-  margin-top: 1.4rem;
-`;
-
-const DivEventCardBottom = styled.div`
-  margin-top: auto;
-`;
-
-const EventCardLine = styled.div`
-  border-bottom: solid 0.2rem rgba(255, 255, 255, 0.2);
-  font-size: 2rem;
-  padding-bottom: 1.4rem;
-  label {
-    color: #9882f8;
-  }
-  span {
-    color: #fff;
-  }
-`;
-
-const EventDate = styled.div`
-  font-size: 2rem;
-  font-weight: 375;
-  color: white;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  @media (max-width: 760px) {
-    font-size: 2.6rem;
+`;
+
+const CarouselWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 900px;
+
+  @media (max-width: 900px) { height: 732px; }
+  @media (max-width: 600px) { height: 610px; }
+`;
+
+const Orbit = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 420px;
+
+  @media (max-width: 900px) { top: 340px; }
+  @media (max-width: 600px) { top: 282px; }
+`;
+
+const DivEventCard = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  width: 24rem;
+  height: 30rem;
+  padding: 2rem;
+
+  border-radius: 1rem;
+
+  background: ${({ $alternate }) =>
+    $alternate
+      ? "linear-gradient(159.14deg, #15B3D6 -6.84%, #212121 118.48%)"
+      : "linear-gradient(159.14deg, #010101 -6.84%, #212121 118.48%)"};
+
+  border: 1px solid rgba(170, 170, 170, 0.6);
+  backdrop-filter: blur(2px);
+
+  transform-origin: center;
+  will-change: transform;
+
+  cursor: pointer;
+
+  &.is-active {
+    border-color: white;
+    box-shadow: 0 0 40px rgba(21, 179, 214, 0.3);
   }
+`;
+
+const EventCardTitle = styled.div`
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+`;
+
+const EventCardBody = styled.div`
+  font-size: 1.3rem;
+  color: white;
 `;
 
 const EventCardFooter = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 6.2rem;
 `;
 
-const HighlightButton = keyframes`
-  to {
-    border: 0.1rem solid rgba(255, 255, 255, 1);
-  }
+const EventDate = styled.div`
+  color: white;
 `;
 
 const ExpandEventButton = styled.button`
-  width: 7rem;
-  height: 4rem;
-  /* margin-right: 4rem; */
-  border-radius: 2.5rem;
-  border: 0.1rem solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(
-    93.71deg,
-    #202020 0%,
-    rgba(32, 32, 32, 0.69) 107.41%
-  );
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: black;
   color: white;
-  font-size: 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    cursor: pointer;
-    animation: ${HighlightButton} 0.15s linear 1 forwards;
-  }
-  @media (max-width: 760px) {
-    font-size: 2.6rem;
-    width: 6rem;
-  }
+  cursor: pointer;
 `;
 
-const EventSection = React.forwardRef(({ onIntersection }, forwardedRef) => {
-  const [ref, inView] = useInView({
-    onChange: (inView) => {
-      if (inView) {
-        onIntersection();
-      }
-    },
-  });
+// Nav
 
-  const horizontalScrollingSection = useRef(null);
+const NavRow = styled.div`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 850px;
+  display: flex;
+  gap: 1rem;
+`;
 
-  useGSAP(() => {
-    let mm = gsap.matchMedia();
-    mm.add("(min-width: 760px)", () => {
-      let eventCards = gsap.utils.toArray(".eventCard");
-      gsap.to(eventCards, {
-        xPercent: -110 * eventCards.length,
-        ease: "none",
-        scrollTrigger: {
-          trigger: horizontalScrollingSection.current,
-          pin: true,
-          scrub: 1,
-          // snap: 1 / (eventCards.length - 1),
+const NavDot = styled.button`
+  width: ${({ $active }) => ($active ? "2rem" : "0.6rem")};
+  height: 0.6rem;
+  border-radius: 1rem;
+  background: ${({ $active }) =>
+    $active ? "white" : "rgba(255,255,255,0.3)"};
+  border: none;
+`;
 
-          end: () => "+=" + horizontalScrollingSection.current.offsetWidth,
-        },
-      });
-    });
-  });
+const NavArrow = styled.button`
+  background: transparent;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+`;
 
+// Constants
+
+const RADII = { desktop: 280, tablet: 220, mobile: 180 };
+const CARD_SIZES = {
+  desktop: { w: 192, h: 240 },
+  tablet: { w: 160, h: 208 },
+  mobile: { w: 136, h: 176 },
+};
+
+const ACTIVE_ANGLE = Math.PI / 2;
+
+// Component
+
+const EventSection = () => {
   const [events, setEvents] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const cardRefs = useRef([]);
+  const radiusRef = useRef(RADII.desktop);
+  const cardSizeRef = useRef(CARD_SIZES.desktop);
 
   useEffect(() => {
-    fetch("/Events.json")
-      .then((response) => response.json())
-      .then((Events) => {
-        setEvents(Events);
-      });
+    fetch("/Events.json").then(res => res.json()).then(setEvents);
   }, []);
 
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      const bp = w <= 600 ? "mobile" : w <= 900 ? "tablet" : "desktop";
+      radiusRef.current = RADII[bp];
+      cardSizeRef.current = CARD_SIZES[bp];
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  const positionCards = useCallback((target) => {
+    if (!events) return;
+
+    const n = events.length;
+    const r = radiusRef.current;
+    const { w, h } = cardSizeRef.current;
+
+    cardRefs.current.forEach((card, i) => {
+      if (!card) return;
+
+      let offset = ((i - target) % n + n) % n;
+      if (offset > n / 2) offset -= n;
+
+      const angle = ACTIVE_ANGLE + (offset / n) * 2 * Math.PI;
+
+      const x = Math.cos(angle) * r - w / 2;
+      const y = Math.sin(angle) * r - h / 2;
+
+      const scale = 1 - Math.abs(offset) * 0.15;
+      const opacity = 1 - Math.abs(offset) * 0.2;
+
+      gsap.to(card, {
+        x,
+        y,
+        scale,
+        opacity,
+        duration: 0.5
+      });
+
+      card.classList.toggle("is-active", i === target);
+    });
+  }, [events]);
+
+  useGSAP(() => {
+    positionCards(activeIndex);
+  }, [activeIndex, events]);
+
+  if (!events) return null;
+
+  const next = () => setActiveIndex((prev) => (prev + 1) % events.length);
+  const prev = () => setActiveIndex((prev) => (prev - 1 + events.length) % events.length);
+
   return (
-    <Section id="event">
-      <div ref={forwardedRef}>
-        <DivScrolling ref={horizontalScrollingSection}>
-          <Div ref={ref}>
-            {Array.from({ length: 7 }).map((_, index) => (
-              <DivEventCard key={index} className="eventCard" alternate={index % 2 === 0}>
-                <EventCardTitle>{events && events[index].Name}</EventCardTitle>
-                <EventCardBody>
-                  {events && events[index].ShortDesc}
-                </EventCardBody>
-                <DivEventCardBottom>
-                  <EventCardLine>
-                    {events && events[index]["Prize Pool"] && (
-                      <div>
-                        <label>Prize Pool: </label>
-                        <span>
-                          &#8377;{events && events[index]["Prize Pool"]}
-                        </span>
-                      </div>
-                    )}
-                  </EventCardLine>
-                  <EventCardFooter>
-                    <EventDate>{events && events[index].Date}</EventDate>
-                    <Link to={`/events`} state={{ eventIndex: index }}>
-                      <ExpandEventButton>
-                        <MdArrowOutward />
-                      </ExpandEventButton>
-                    </Link>
-                  </EventCardFooter>
-                </DivEventCardBottom>
-              </DivEventCard>
-            ))}
-          </Div>
-        </DivScrolling>
-      </div>z
+    <Section>
+      <CarouselWrapper>
+        <Orbit>
+          {events.map((event, i) => (
+            <DivEventCard
+              key={i}
+              ref={(el) => (cardRefs.current[i] = el)}
+              $alternate={i % 2 === 0}
+              onClick={() => setActiveIndex(i)}
+            >
+              <EventCardTitle>{event.Name}</EventCardTitle>
+              <EventCardBody>{event.ShortDesc}</EventCardBody>
+
+              <EventCardFooter>
+                <EventDate>{event.Date}</EventDate>
+                <Link to="/events" state={{ eventIndex: i }}>
+                  <ExpandEventButton>
+                    <MdArrowOutward />
+                  </ExpandEventButton>
+                </Link>
+              </EventCardFooter>
+            </DivEventCard>
+          ))}
+        </Orbit>
+
+        <NavRow>
+          <NavArrow onClick={prev}>‹</NavArrow>
+          {events.map((_, i) => (
+            <NavDot
+              key={i}
+              $active={i === activeIndex}
+              onClick={() => setActiveIndex(i)}
+            />
+          ))}
+          <NavArrow onClick={next}>›</NavArrow>
+        </NavRow>
+      </CarouselWrapper>
     </Section>
   );
-});
-
-EventSection.displayName = "EventSection";
+};
 
 export default EventSection;
