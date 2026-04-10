@@ -1,6 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Syne:wght@400;500;600;700&display=swap');
-
-/*  Accordion Root  */
+/* Accordion Root Container */
 .AccordionRoot {
   width: 100%;
   display: flex;
@@ -8,7 +6,7 @@
   gap: 2px;
 }
 
-/*  Accordion Item  */
+/* Accordion Item */
 .AccordionItem {
   overflow: hidden;
   position: relative;
@@ -38,42 +36,37 @@
   opacity: 1;
 }
 
-/*  Accordion Header  */
+/* Accordion Header */
 .AccordionHeader {
   all: unset;
 }
 
-/*  Accordion Trigger  */
+/* Accordion Trigger */
 .AccordionTrigger {
   all: unset;
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 20px 20px 20px 22px;
-  background: transparent;
-  color: rgba(200, 215, 255, 0.82);
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
+  padding: 16px 20px;
+  background-color: transparent;
+  color: #e0e0e0;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
-  transition: color 0.25s ease, background 0.25s ease, text-shadow 0.25s ease;
-  border-bottom: 1px solid rgba(80, 100, 180, 0.12);
-  box-sizing: border-box;
-  letter-spacing: 0.4px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(102, 73, 184, 0.25);
 }
 
 .AccordionTrigger:hover {
-  color: rgba(220, 235, 255, 1);
-  background: rgba(80, 100, 200, 0.07);
-  text-shadow: 0 0 18px rgba(140, 170, 255, 0.45);
+  background-color: rgba(102, 73, 184, 0.1);
+  border-color: rgba(102, 73, 184, 0.5);
 }
 
 .AccordionTrigger[data-state="open"] {
-  color: #ffffff;
-  background: rgba(70, 100, 220, 0.12);
-  border-bottom-color: transparent;
-  text-shadow: 0 0 22px rgba(140, 180, 255, 0.6), 0 0 8px rgba(100, 150, 255, 0.35);
+  background-color: rgba(102, 73, 184, 0.15);
+  border-color: rgba(102, 73, 184, 0.6);
 }
 
 .TriggerText {
@@ -81,37 +74,35 @@
   flex: 1;
 }
 
-/*  Chevron  */
+/* Chevron */
 .AccordionChevron {
-  width: 18px;
-  height: 18px;
-  color: rgba(100, 150, 255, 0.65);
+  width: 20px;
+  height: 20px;
+  color: #6649b8;
   flex-shrink: 0;
   margin-left: 16px;
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s ease, filter 0.25s ease;
+  transition: transform 0.35s ease;
 }
 
 .AccordionTrigger[data-state="open"] .AccordionChevron {
   transform: rotate(180deg);
-  color: rgba(140, 180, 255, 1);
-  filter: drop-shadow(0 0 6px rgba(140, 180, 255, 0.8));
 }
 
-/*Accordion Content */
+/* Accordion Content */
 .AccordionContent {
   overflow: hidden;
-  background: rgba(40, 50, 100, 0.08);
-  border-bottom: 1px solid rgba(80, 100, 180, 0.12);
-}
-
-.AccordionContent[data-state="open"] {
-  animation: slideDown 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: slideDown 0.3s ease;
+  background-color: transparent;
+  border-radius: 0 0 8px 8px;
+  border: 1px solid rgba(102, 73, 184, 0.15);
+  border-top: none;
 }
 
 .AccordionContent[data-state="closed"] {
-  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: slideUp 0.3s ease;
 }
 
+/* Animations */
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -134,25 +125,16 @@
   }
 }
 
-/*Content Text*/
+/* Content Text */
 .AccordionContentText {
-  padding: 16px 20px 20px 22px;
-  color: rgba(170, 195, 240, 0.82);
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.75;
-  letter-spacing: 0.2px;
+  padding: 16px 20px;
+  color: #d0d0d0;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
-/*FAQ Section Wrappers */
-.FAQSection {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+/* FAQ Section */
+.FAQSection,
 .FAQDiv {
   width: 100%;
   display: flex;
@@ -164,15 +146,15 @@
   display: none;
 }
 
-/*Responsive design*/
+/* Responsive */
 @media (max-width: 760px) {
   .AccordionTrigger {
-    padding: 16px 14px 16px 16px;
+    padding: 16px 14px;
     font-size: 13px;
   }
 
   .AccordionContentText {
-    padding: 14px 14px 18px 16px;
+    padding: 14px;
     font-size: 13px;
   }
 
