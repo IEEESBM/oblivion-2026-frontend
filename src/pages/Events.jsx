@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { Select } from "@chakra-ui/select";
-import bg from "../assets/video/bg.jpg";
+import bg from "../assets/blackhole-bg.png";
 import { MdArrowBack } from "react-icons/md";
 import { UserContext } from "../App";
 import axios from "axios";
@@ -726,7 +726,7 @@ const Events = ({ toggleLoginSignup }) => {
               <div style={{ display: "flex" }}>
                 Registered |
                 <a
-                  href="https://chat.whatsapp.com/BbCbwvsKCLZ2qO5iDk6eaZ"
+                  href="https://chat.whatsapp.com/LWgiPYFRHCgEpomIXW2EEO"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{

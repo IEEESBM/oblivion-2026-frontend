@@ -1,288 +1,373 @@
-import { styled, keyframes } from "styled-components";
-import React, { useRef, useState, useEffect } from "react";
+import { styled, createGlobalStyle } from "styled-components";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { MdArrowOutward } from "react-icons/md";
-import { useInView } from "react-intersection-observer";
-
-//gsap imports
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import ScrollTrigger from "gsap/ScrollTrigger";
 import { Link } from "react-router-dom";
-gsap.registerPlugin(ScrollTrigger);
+
+// Google Font import
+const GlobalFont = createGlobalStyle`
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Raleway:wght@400;500;600;700&display=swap');
+`;
+
+// ─── Layout ────────────────────────────────────────────────────────────────────
 
 const Section = styled.section`
-  margin-top: -40vh;
-  padding-bottom: 10rem;   /* ✅ ADD THIS */
-
-  @media (max-width: 760px) {
-    padding: 0 0 10rem 0;
-    margin-top: -50vh;
-  }
-`;
-
-const DivScrolling = styled.div`
-  overflow-x: hidden;
-  padding-bottom: 4rem;  /* ✅ add this */
-`;
-
-const Div = styled.div`
-  /* margin-top: 16rem; */
-  margin-top: max(30rem, calc((100vh - 44rem) / 2));
-  margin-left: 50vw;
-  margin-bottom: 6rem; 
-  width: fit-content;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 7.5rem;
-
-  @media (max-width: 760px) {
-    margin-left: 0;
-    width: 100%;
-    padding: 0 1.8rem;
-    flex-direction: column;
-    justify-content: center;
-    gap: 10rem;
-    height: fit-content;
-    overflow: hidden;
-  }
+  gap: 2.5rem;
+  padding: 4rem 0 3rem;
 `;
+
 /*
-const DivEventCard = styled.div`
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 42rem;
-  height: 44rem;
+  OrbitStage is a fixed-size box that exactly contains the circular orbit.
+  Height = 2 * radius + card_height  (the full vertical diameter of the orbit)
+  We leave a little breathing room on top/bottom.
 
-  background: ${({ alternate }) =>
-    alternate
-      ? "linear-gradient(159.14deg, #7179ecb9 -6.84%, #212121 118.48%)"
-      : "linear-gradient(159.14deg, #010101 -6.84%, #212121 118.48%)"};
-
-  border-radius: 1rem;
-  border: 1px solid rgba(170, 170, 170, 0.6);
-  @media (max-width: 760px) {
-    width: 100%;
-    height: 48rem;
-    padding: 2rem 2rem 0 2rem;
-  }
-    opacity:0.85;
-  padding: 3rem 3rem 0 3rem;
-  backdrop-filter: blur(2px);
-`;
+  Desktop:  radius=360, card_h=288  → orbit diameter = 360*2 + 288 = 1008px  → ~1040px stage
+  Tablet:   radius=270, card_h=216  → 756 + 216 = 972px  → ~780px (cards scale down via rem)
+  Mobile:   radius=210, card_h=184  → 604px  → ~620px
 */
+const OrbitStage = styled.div`
+  position: relative;
+  width: 100%;
+  /* desktop: 2*460 + 576 = 1496 → 1500px */
+  height: 1500px;
+
+  /* tablet ≤900px: 2*340 + 432 = 1112 → 1120px */
+  @media (max-width: 900px) { height: 1120px; }
+
+  /* mobile ≤600px: 2*220 + 320 = 760 → 780px */
+  @media (max-width: 600px) { height: 780px; }
+`;
+
+const Orbit = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 750px;
+
+  @media (max-width: 900px) { top: 560px; }
+  @media (max-width: 600px) { top: 390px; }
+`;
+
+// ─── Card ──────────────────────────────────────────────────────────────────────
 
 const DivEventCard = styled.div`
-  overflow: hidden;
+  position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
-  width: 42rem;
-  height: 44rem;
+  /* desktop: 30rem × 36rem = 480px × 576px */
+  width: 30rem;
+  height: 36rem;
+  padding: 2.5rem;
 
-  padding: 3rem;
-
-  border-radius: 4.5rem;
-
-  background: ${({ alternate }) =>
-    alternate
-      ? "linear-gradient(160deg, rgba(138,43,226,0.25), rgba(0,0,0,0.9))"
-      : "linear-gradient(160deg, rgba(0,0,0,0.9), rgba(30,30,30,0.9))"};
-
-  border: 1px solid rgba(255,255,255,0.1);
-  backdrop-filter: blur(10px);
-
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 0 15px rgba(129, 29, 223, 0.3);
-    border: 1px solid rgba(138, 43, 226, 0.6);
+  /* tablet: 27rem × 27rem = 432px × 432px */
+  @media (max-width: 900px) {
+    width: 27rem;
+    height: 27rem;
+    padding: 1.75rem;
   }
 
-  @media (max-width: 760px) {
-    width: 100%;
-    height: 48rem;
+  /* mobile: 20rem × 20rem = 320px × 320px */
+  @media (max-width: 600px) {
+    width: 20rem;
+    height: 20rem;
+    padding: 1.25rem;
+  }
+
+  border-radius: 1.25rem;
+
+  background: ${({ $alternate }) =>
+    $alternate
+      ? "linear-gradient(159.14deg, #1e2f72 -6.84%, #0d1b3e 118.48%)"
+      : "linear-gradient(159.14deg, #0c1130 -6.84%, #0f1520 118.48%)"};
+
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  backdrop-filter: blur(6px);
+  transform-origin: center;
+  will-change: transform;
+  cursor: pointer;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent,
+      rgba(180, 140, 255, 0.6) 40%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(180, 140, 255, 0.6) 60%,
+      transparent
+    );
+    border-radius: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &.is-active {
+    border-color: rgba(139, 92, 246, 0.85);
+    box-shadow:
+      0 0 30px rgba(99, 60, 220, 0.45),
+      0 0 70px rgba(80, 40, 200, 0.2),
+      inset 0 0 30px rgba(99, 60, 220, 0.07);
+
+    &::before { opacity: 1; }
   }
 `;
 
 
 const EventCardTitle = styled.div`
-  font-size: 3rem;
-  margin-bottom:2.5rem;
-  font-weight: 300;
-  
-  color: #e6caff;
-  text-shadow: 0 0 8px rgba(230, 202, 255, 0.5), 0 0 16px rgba(138, 43, 226, 0.15);
-  @media (max-width: 760px) {
-    font-size: 4rem;
-    margin-bottom:1rem;
-  }
+  font-family: 'Cinzel', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  margin-top: 1rem;
+  text-align: center;
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.95),
+    0 0 20px rgba(180, 140, 255, 0.85),
+    0 0 45px rgba(130, 80, 255, 0.6),
+    0 0 90px rgba(99, 60, 220, 0.35);
+
+  @media (max-width: 900px) { font-size: 1.8rem; margin-top: 0.5rem; }
+  @media (max-width: 600px) { font-size: 1.3rem; margin-top: 0.25rem; }
 `;
 
 const EventCardBody = styled.div`
-  font-size: 2rem;
-  line-height: 1.4;
+  font-family: 'Verdana', sans-serif;
+  font-size: 1.7rem;
   font-weight: 500;
-  word-wrap: wrap;
-  color: white;
-  @media (max-width: 760px) {
-    font-size: 2.0rem;
-    line-height: 1.4;
-  }
-  margin-top: 1.4rem;
-`;
+  line-height: 1.55;
+  color: rgba(220, 215, 255, 0.88);
 
-const DivEventCardBottom = styled.div`
-  margin-top: auto;
-`;
-
-const EventCardLine = styled.div`
-  border-bottom: solid 0.2rem rgba(255, 255, 255, 0.2);
-  font-size: 2rem;
-  padding-bottom: 1.4rem;
-  label {
-    color: #9882f8;
-  }
-  span {
-    color: #fff;
-  }
-`;
-
-const EventDate = styled.div`
-  font-size: 2rem;
-  font-weight: 375;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  @media (max-width: 760px) {
-    font-size: 2.6rem;
-  }
+  @media (max-width: 900px) { font-size: 1.2rem; }
+  @media (max-width: 600px) { font-size: 0.85rem; line-height: 1.4; }
 `;
 
 const EventCardFooter = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 6.2rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(139, 92, 246, 0.2);
 `;
 
-const HighlightButton = keyframes`
-  to {
-    border: 0.1rem solid rgba(255, 255, 255, 1);
-  }
+const EventDate = styled.div`
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(180, 160, 255, 0.95);
+  text-shadow:
+    0 0 10px rgba(160, 120, 255, 0.7),
+    0 0 28px rgba(120, 80, 220, 0.4);
+
+  @media (max-width: 900px) { font-size: 1.1rem; }
+  @media (max-width: 600px) { font-size: 0.8rem; letter-spacing: 0.03em; }
 `;
 
 const ExpandEventButton = styled.button`
-  width: 7rem;
-  height: 4rem;
-  /* margin-right: 4rem; */
-  border-radius: 2.5rem;
-  border: 0.1rem solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(
-    93.71deg,
-    #202020 0%,
-    rgba(32, 32, 32, 0.69) 107.41%
-  );
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  background: rgba(10, 10, 30, 0.9);
   color: white;
-  font-size: 3rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.3rem;
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  flex-shrink: 0;
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 0 10px rgba(99, 60, 220, 0.25);
+
+  @media (max-width: 900px) { width: 2.5rem; height: 2.5rem; font-size: 1rem; }
+  @media (max-width: 600px) { width: 2rem;   height: 2rem;   font-size: 0.8rem; }
 
   &:hover {
-    cursor: pointer;
-    animation: ${HighlightButton} 0.15s linear 1 forwards;
-  }
-  @media (max-width: 760px) {
-    font-size: 2.6rem;
-    width: 6rem;
+    background: rgba(99, 60, 220, 0.75);
+    border-color: rgba(180, 140, 255, 0.95);
+    box-shadow:
+      0 0 14px rgba(139, 92, 246, 0.7),
+      0 0 30px rgba(99, 60, 220, 0.45);
   }
 `;
 
-const EventSection = React.forwardRef(({ onIntersection }, forwardedRef) => {
-  const [ref, inView] = useInView({
-    onChange: (inView) => {
-      if (inView) {
-        onIntersection();
-      }
-    },
-  });
+// ─── Nav — sits BELOW OrbitStage, normal flow ──────────────────────────────────
 
-  const horizontalScrollingSection = useRef(null);
+const NavRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  height: 2.5rem;
+  margin-top: 0rem;
+  /* no absolute positioning — it's a flex child of Section */
+`;
 
-  useGSAP(() => {
-    let mm = gsap.matchMedia();
-    mm.add("(min-width: 760px)", () => {
-      let eventCards = gsap.utils.toArray(".eventCard");
-      gsap.to(eventCards, {
-        xPercent: -110 * eventCards.length,
-        ease: "none",
-        scrollTrigger: {
-          trigger: horizontalScrollingSection.current,
-          pin: true,
-          scrub: 1,
-          // snap: 1 / (eventCards.length - 1),
+const NavDot = styled.button`
+  width: ${({ $active }) => ($active ? "2rem" : "0.65rem")};
+  height: 0.65rem;
+  border-radius: 1rem;
+  background: ${({ $active }) => ($active ? "white" : "rgba(255,255,255,0.28)")};
+  border: none;
+  padding: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: width 0.22s ease, background 0.22s ease;
+`;
 
-          end: () => "+=" + horizontalScrollingSection.current.offsetWidth,
-        },
-      });
-    });
-  });
+const NavArrow = styled.button`
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 2.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  line-height: 1;
+  padding: 0;
+  user-select: none;
+  transition: color 0.2s ease;
 
+  &:hover { color: rgba(139, 92, 246, 1); }
+`;
+
+// ─── Constants ─────────────────────────────────────────────────────────────────
+
+// radius is the orbit radius in px (distance from pivot to card centre)
+const RADII = { desktop: 460, tablet: 340, mobile: 220 };
+
+// half card sizes in px — synced with rem values in DivEventCard above
+// desktop: 30rem=480px, 36rem=576px → half: 240 × 288
+// tablet:  27rem=432px, 27rem=432px → half: 216 × 216
+// mobile:  20rem=320px, 20rem=320px → half: 160 × 160
+const CARD_SIZES = {
+  desktop: { w: 240, h: 288 },
+  tablet:  { w: 216, h: 216 },
+  mobile:  { w: 160, h: 160 },
+};
+
+const ACTIVE_ANGLE = Math.PI / 2; // front card sits at bottom of orbit
+
+// ─── Component ─────────────────────────────────────────────────────────────────
+
+const EventSection = () => {
   const [events, setEvents] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const cardRefs    = useRef([]);
+  const radiusRef   = useRef(RADII.desktop);
+  const cardSizeRef = useRef(CARD_SIZES.desktop);
 
   useEffect(() => {
-    fetch("/Events.json")
-      .then((response) => response.json())
-      .then((Events) => {
-        setEvents(Events);
-      });
+    fetch("/Events.json").then(r => r.json()).then(setEvents);
   }, []);
 
+  useEffect(() => {
+    const update = () => {
+      const w  = window.innerWidth;
+      const bp = w <= 600 ? "mobile" : w <= 900 ? "tablet" : "desktop";
+      radiusRef.current   = RADII[bp];
+      cardSizeRef.current = CARD_SIZES[bp];
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  const positionCards = useCallback((target) => {
+    if (!events) return;
+    const n = events.length;
+    const r = radiusRef.current;
+    const { w, h } = cardSizeRef.current;
+
+    cardRefs.current.forEach((card, i) => {
+      if (!card) return;
+
+      let offset = ((i - target) % n + n) % n;
+      if (offset > n / 2) offset -= n;
+
+      const angle = ACTIVE_ANGLE + (offset / n) * 2 * Math.PI;
+      const x     = Math.cos(angle) * r - w / 2;
+      const y     = Math.sin(angle) * r - h / 2;
+
+      const scale   = 1 - Math.abs(offset) * 0.08;
+      const opacity = 1 - Math.abs(offset) * 0.15;
+
+      gsap.to(card, { x, y, scale, opacity, duration: 0.5, ease: "power2.out" });
+      card.classList.toggle("is-active", i === target);
+    });
+  }, [events]);
+
+  useGSAP(() => { positionCards(activeIndex); }, [activeIndex, events]);
+
+  if (!events) return null;
+
+  const next = () => setActiveIndex(p => (p + 1) % events.length);
+  const prev = () => setActiveIndex(p => (p - 1 + events.length) % events.length);
+
   return (
-    <Section id="event">
-      <div ref={forwardedRef}>
-        <DivScrolling ref={horizontalScrollingSection}>
-          <Div ref={ref}>
-            {Array.from({ length: 7 }).map((_, index) => (
-              <DivEventCard key={index} className="eventCard" alternate={index % 2 === 0}>
-                <EventCardTitle>{events && events[index].Name}</EventCardTitle>
-                <EventCardBody>
-                  {events && events[index].ShortDesc}
-                </EventCardBody>
-                <DivEventCardBottom>
-                  <EventCardLine>
-                    {events && events[index]["Prize Pool"] && (
-                      <div>
-                        <label>Prize Pool: </label>
-                        <span>
-                          &#8377;{events && events[index]["Prize Pool"]}
-                        </span>
-                      </div>
-                    )}
-                  </EventCardLine>
-                  <EventCardFooter>
-                    <EventDate>{events && events[index].Date}</EventDate>
-                    <Link to={`/events`} state={{ eventIndex: index }}>
-                      <ExpandEventButton>
-                        <MdArrowOutward />
-                      </ExpandEventButton>
-                    </Link>
-                  </EventCardFooter>
-                </DivEventCardBottom>
+    <>
+      <GlobalFont />
+      <Section>
+        {/* ── Orbit ── */}
+        <OrbitStage>
+          <Orbit>
+            {events.map((event, i) => (
+              <DivEventCard
+                key={i}
+                ref={el => (cardRefs.current[i] = el)}
+                $alternate={i % 2 === 0}
+                onClick={() => setActiveIndex(i)}
+              >
+                <EventCardTitle>{event.Name}</EventCardTitle>
+                <EventCardBody>{event.ShortDesc}</EventCardBody>
+                <EventCardFooter>
+                  <EventDate>{event.Date}</EventDate>
+                  <Link
+                    to="/events"
+                    state={{ eventIndex: i }}
+                    onClick={e => e.stopPropagation()}
+                  >
+                    <ExpandEventButton><MdArrowOutward /></ExpandEventButton>
+                  </Link>
+                </EventCardFooter>
               </DivEventCard>
             ))}
-          </Div>
-        </DivScrolling>
-      </div>z
-    </Section>
-  );
-});
+          </Orbit>
+        </OrbitStage>
 
-EventSection.displayName = "EventSection";
+        {/* ── Nav — below orbit, in normal flex flow ── */}
+        <NavRow>
+          <NavArrow onClick={prev}>‹</NavArrow>
+          {events.map((_, i) => (
+            <NavDot
+              key={i}
+              $active={i === activeIndex}
+              onClick={() => setActiveIndex(i)}
+            />
+          ))}
+          <NavArrow onClick={next}>›</NavArrow>
+        </NavRow>
+      </Section>
+    </>
+  );
+};
 
 export default EventSection;

@@ -95,9 +95,9 @@ const Li = styled(({ isActive, ...rest }) => <li {...rest} />)`
   cursor: pointer;
 
   &:hover {
-    color: #16c2d1;
-    text-shadow: 0 0 5px #16c2d1, 0 0 10px #16c2d1, 0 0 15px #16c2d1,
-      0 0 20px #16c2d1;
+    color: #a878e6;
+    text-shadow: 0 0 5px #331ea8, 0 0 10px #5c1294, 0 0 15px #1d0761,
+      0 0 20px #1a1a83;
   }
 
   color: ${(props) => (props.isActive ? "#fff" : "")};
