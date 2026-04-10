@@ -132,10 +132,10 @@ const FAQSection = React.forwardRef(({ onIntersection }, forwardedRef) => {
           <Accordion.Root type="single" collapsible>
             <Accordion.Item value="item-1">
               <AccordionTrigger>
-                When is TechWeek 2025?
+                When is TechWeek 2026?
               </AccordionTrigger>
               <AccordionContent>
-                Scheduled for the 29th March to 1st April 2025, TechWeek promises
+                Scheduled for the 11th April to 15th April 2026, TechWeek promises
                 a week filled with tech challenges and networking opportunities.
               </AccordionContent>
             </Accordion.Item>
@@ -154,7 +154,7 @@ const FAQSection = React.forwardRef(({ onIntersection }, forwardedRef) => {
                 What Events to Expect?
               </AccordionTrigger>
               <AccordionContent>
-                Coding, electronics, development, and informal events.
+                Coding, electronics, web dev, and informal events.
               </AccordionContent>
             </Accordion.Item>
 
@@ -163,7 +163,7 @@ const FAQSection = React.forwardRef(({ onIntersection }, forwardedRef) => {
                 What's the prize?
               </AccordionTrigger>
               <AccordionContent>
-                Prize pool totals ₹28,000 across events.
+                Prize pool totals ₹32,000 across events.
               </AccordionContent>
             </Accordion.Item>
 

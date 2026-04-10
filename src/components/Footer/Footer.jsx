@@ -6,7 +6,6 @@ import facebook from "../../assets/footer-icons/facebook.png";
 import twitter from "../../assets/footer-icons/twitter.png";
 import instagram from "../../assets/footer-icons/instagram.png";
 import youtube from "../../assets/footer-icons/youtube.png";
-import { useNavigate } from "react-router-dom";
 
 const FooterContainer = styled.footer`
   margin-top: 30rem;
@@ -130,10 +129,6 @@ const SocialMediaIcons = styled.div`
 
 const Footer = ({ scrollToHero }) => {
   const currentYear = new Date().getFullYear();
-  const navigate = useNavigate();
-  const handleButtonClick = () => {
-    navigate("/meet-the-team");
-  };
   return (
     <FooterContainer>
       <UpperFooter>
@@ -141,15 +136,12 @@ const Footer = ({ scrollToHero }) => {
           <Logo src={IEEElogo} alt="IEEE logo" />
         </div>
         <div>
-          <a onClick={scrollToHero}>
-            <h1 className="text-white font-mioge m-1.5 hover:text-[#16C2D1] max-[760px]:hidden" style={{ paddingLeft: '55%'}}>OBLIVION</h1>
-          </a>
-        </div>
-        <div>
-          <StyledLink onClick={() => handleButtonClick()}>
-            Meet The Team
-          </StyledLink>
-        </div>
+  <a onClick={scrollToHero}>
+    <h1 className="text-white font-mioge m-1.5 hover:text-[#16C2D1] max-[760px]:hidden">
+      OBLIVION
+    </h1>
+  </a>
+</div>
       </UpperFooter>
       <LowerFooter>
         <CopyrightText>

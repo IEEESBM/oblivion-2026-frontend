@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Events from "./pages/Events";
-import MeetTheTeam from "./pages/MeetTheTeam";
 import NotFound from "./pages/NotFound";
 import { useState, useEffect, createContext } from "react";
 
@@ -121,7 +120,6 @@ function App() {
             path="/events"
             element={<Events toggleLoginSignup={toggleLoginSignup} />}
           />
-          <Route path="/meet-the-team" element={<MeetTheTeam />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
