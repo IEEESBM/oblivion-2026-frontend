@@ -8,14 +8,55 @@ import { useInView } from "react-intersection-observer";
 
 const Section = styled.section`
   margin: 40rem 0 30rem 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   @media (max-width: 760px) {
     margin: 20rem 0;
   }
 `;
 
 const Div = styled.div`
-  height: 100vh;
+  min-height: 100vh;
   background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 40px 20px;
+`;
+
+const FAQContainer = styled.div`
+  border: 2.5px solid #00d9ff;
+  border-radius: 20px;
+  padding: 40px;
+  background-color: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 700px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 30px rgba(0, 217, 255, 0.2);
+
+  @media (max-width: 760px) {
+    padding: 30px;
+    border-radius: 15px;
+  }
+`;
+
+const FAQTitle = styled.h3`
+  font-size: 32px;
+  font-style: italic;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
+  font-weight: 600;
+
+  @media (max-width: 760px) {
+    font-size: 24px;
+    margin-bottom: 25px;
+  }
 `;
 
 const AccordionTrigger = React.forwardRef(
@@ -26,8 +67,7 @@ const AccordionTrigger = React.forwardRef(
         {...props}
         ref={forwardedRef}
       >
-        <p></p>
-        <p>{children}</p>
+        <span className="TriggerText">{children}</span>
         <ChevronDownIcon className="AccordionChevron" aria-hidden />
       </Accordion.Trigger>
     </Accordion.Header>
@@ -63,13 +103,14 @@ const FAQSection = React.forwardRef(({ onIntersection }, forwardedRef) => {
   return (
     <Section className="FAQSection" ref={ref}>
       <Div className="FAQDiv" ref={forwardedRef}>
-        <h3 className="FAQHeader">FAQ</h3>
-        <Accordion.Root
-          className="AccordionRoot"
-          type="single"
-          defaultValue={null}
-          collapsible
-        >
+        <FAQContainer>
+          <FAQTitle>FREQUENTLY ASKED QUESTIONS</FAQTitle>
+          <Accordion.Root
+            className="AccordionRoot"
+            type="single"
+            defaultValue={null}
+            collapsible
+          >
           <Accordion.Item className="AccordionItem" value="item-1">
             <AccordionTrigger>When is TechWeek 2025?</AccordionTrigger>
             <AccordionContent>
@@ -129,6 +170,7 @@ const FAQSection = React.forwardRef(({ onIntersection }, forwardedRef) => {
             </Accordion.Content>
           </Accordion.Item>
         </Accordion.Root>
+        </FAQContainer>
       </Div>
     </Section>
   );
@@ -137,3 +179,4 @@ const FAQSection = React.forwardRef(({ onIntersection }, forwardedRef) => {
 FAQSection.displayName = "FAQSection";
 
 export default FAQSection;
+

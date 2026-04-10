@@ -160,7 +160,7 @@ const LoginSignup = function ({ toggleLoginSignup }) {
     <section className="ls-outer-container">
       <div className="container">
         <h6>
-          <label htmlFor="reg-log">
+          <label htmlFor="reg-log" className="tab-toggle">
             <span className={isChecked ? "login white" : "login purple"}>
               Log In
             </span>
@@ -168,12 +168,10 @@ const LoginSignup = function ({ toggleLoginSignup }) {
               Sign Up
             </span>
           </label>
-          <span className="close-button text-[#16A2D1] border-2 rounded-2xl " onClick={toggleLoginSignup}>
-           X
+          <span className="close-button" onClick={toggleLoginSignup}>
+            ✕
           </span>
         </h6>
-        <div></div>
-        <div></div>
         <input
           className="checkbox"
           type="checkbox"
