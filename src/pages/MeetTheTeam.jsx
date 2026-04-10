@@ -4,9 +4,10 @@ import bg from "../assets/video/bg.jpg";
 import github from "../assets/MeetTheTeam-icons/github.png";
 import linkedin from "../assets/MeetTheTeam-icons/linkedin.png";
 import instagram from "../assets/MeetTheTeam-icons/instagram.png";
-import dreamscapeLogo from "../assets/ODYSSEY.png";
 import BackArrow from "../assets/MeetTheTeam-icons/back.png";
 import { Link, useNavigate } from "react-router-dom";
+
+const oblivionLogo = "/favicon-oblivion.png";
 
 const TeamContainer = styled.div`
   padding: 40px;
@@ -273,7 +274,7 @@ const MeetTheTeam = ({ isLoading }) => {
         </TeamGrid>
         <div>
           <Link to="/" style={{ textDecoration: "none" }}>
-            <DSLogo src={dreamscapeLogo} alt="dreamscape logo" />
+            <DSLogo src={oblivionLogo} alt="Oblivion logo" />
           </Link>
         </div>
       </TeamContainer>

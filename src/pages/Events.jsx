@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Select } from "@chakra-ui/select";
 import bg from "../assets/video/bg.jpg";
 import { MdArrowBack } from "react-icons/md";
-import logo from "../assets/ODYSSEY.png";
 import { UserContext } from "../App";
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -675,7 +674,7 @@ const Events = ({ toggleLoginSignup }) => {
       {!mobile ? (
         <EventSidebar>
           <DivLogoSidebar>
-            <ImgLogo src={logo} alt="dreamscape logo" onClick={handleGoBack} />
+            <ImgLogo src="/oblivionlogo.png" alt="oblivion logo" onClick={handleGoBack} />
           </DivLogoSidebar>
           {Events?.map((event, index) => (
             <EventSidebarButton
@@ -709,11 +708,7 @@ const Events = ({ toggleLoginSignup }) => {
               </option>
             ))}
           </MobileSelect>
-          <MobileImgLogo
-            src={logo}
-            alt="dreamscape logo"
-            onClick={handleGoBack}
-          />
+          <MobileImgLogo src="/oblivionlogo.png" alt="oblivion logo" />
           <MobileBackButton onClick={handleGoBack}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
               <path d="M512 256A256 256 0 1 0 0 256a256 256 0 1 0 512 0zM231 127c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-71 71L376 232c13.3 0 24 10.7 24 24s-10.7 24-24 24l-182.1 0 71 71c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L119 273c-9.4-9.4-9.4-24.6 0-33.9L231 127z" />
