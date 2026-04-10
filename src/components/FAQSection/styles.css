@@ -28,9 +28,19 @@ h3 {
 
 .AccordionItem {
   overflow: hidden;
-  margin-top: 1px;
   border-radius: 1.5rem;
-  border: 0.5px solid #f0f0f0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+
+  transition: all 0.3s ease;
+}
+
+.AccordionItem:hover {
+  transform: translateY(-3px);
+  border: 1px solid rgba(138, 43, 226, 0.5);
+  box-shadow: 0 0 20px rgba(138, 43, 226, 0.2);
 }
 
 .AccordionItem:focus-within {
@@ -44,33 +54,29 @@ h3 {
 
 .AccordionTrigger {
   font-family: inherit;
-  background-color: transparent;
   padding: 1rem 2rem;
   height: 4rem;
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: clamp(1.8rem, 2vw, 2.8rem);
-  line-height: 1;
+
+  font-size: clamp(1.6rem, 2vw, 2.4rem);
   color: white;
-  box-shadow: 0 1px 0 #aaaaaa;
-  background-color: rgba(2, 5, 40 , 0.6);
-  transition: background-image 0.3s ease-in;
+
+  background: rgba(2, 5, 40, 0.6);
   border-radius: 1.5rem;
+
+  transition: all 0.3s ease;
 }
 
 .AccordionTrigger:hover {
-  background-size: 100% 100%;
-  animation: FAQGradientFade 0.3s ease-in-out forwards;
   background: linear-gradient(
-    0,
-    rgba(1, 1, 1, 0.8) -6.84%,
-    rgba(22, 194, 209, 0.8)
+    90deg,
+    rgba(138, 43, 226, 0.3),
+    rgba(0, 200, 255, 0.3)
   );
-  background-repeat: no-repeat;
 }
-
 .AccordionTrigger:not(:hover) {
   animation: FAQGradientFadeOut 0.3s ease-in-out forwards; /* Animation for fade-out effect when not hovering */
 }
@@ -94,12 +100,14 @@ h3 {
 }
 
 .AccordionContent {
-  overflow: hidden;
-  font-size: clamp(1.6rem, 1.3vw, 2rem);
-  text-align: center;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.5);
-  flex-shrink: 1;
+  font-size: clamp(1.5rem, 1.2vw, 1.8rem);
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.AccordionContentText {
+  padding: 2rem;
+  line-height: 1.6;
 }
 .AccordionContent[data-state="open"] {
   animation: slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1);
@@ -149,4 +157,12 @@ h3 {
   to {
     height: 0;
   }
+}
+
+.AccordionTrigger[data-state="open"] {
+  background: linear-gradient(
+    90deg,
+    rgba(138, 43, 226, 0.4),
+    rgba(0, 200, 255, 0.4)
+  );
 }
