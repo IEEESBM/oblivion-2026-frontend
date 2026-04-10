@@ -9,10 +9,11 @@ import youtube from "../../assets/footer-icons/youtube.png";
 import { useNavigate } from "react-router-dom";
 
 const FooterContainer = styled.footer`
-  margin-top: 20rem;
-  background-color: #000;
+  margin-top: 30rem;
+  background-color: #00000050;
   padding: 50px;
-  padding-top: 30px;
+  border-radius:15px;
+  padding-top: 40px;
   @media (max-width: 760px) {
     padding: 20px;
     padding-left: 15px;

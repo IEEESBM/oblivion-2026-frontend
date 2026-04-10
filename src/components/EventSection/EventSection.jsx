@@ -12,22 +12,24 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Section = styled.section`
   margin-top: -40vh;
+  padding-bottom: 10rem;   /* ✅ ADD THIS */
 
   @media (max-width: 760px) {
-    padding: 0;
+    padding: 0 0 10rem 0;
     margin-top: -50vh;
   }
 `;
 
 const DivScrolling = styled.div`
   overflow-x: hidden;
+  padding-bottom: 4rem;  /* ✅ add this */
 `;
 
 const Div = styled.div`
   /* margin-top: 16rem; */
-  margin-top: max(16rem, calc((100vh - 44rem) / 2));
+  margin-top: max(30rem, calc((100vh - 44rem) / 2));
   margin-left: 50vw;
-  /* margin-bottom: 1rem; */
+  margin-bottom: 6rem; 
   width: fit-content;
   display: flex;
   justify-content: center;
@@ -44,7 +46,7 @@ const Div = styled.div`
     overflow: hidden;
   }
 `;
-
+/*
 const DivEventCard = styled.div`
   overflow: hidden;
   display: flex;
@@ -55,7 +57,7 @@ const DivEventCard = styled.div`
 
   background: ${({ alternate }) =>
     alternate
-      ? "linear-gradient(159.14deg, #15B3D6 -6.84%, #212121 118.48%)"
+      ? "linear-gradient(159.14deg, #7179ecb9 -6.84%, #212121 118.48%)"
       : "linear-gradient(159.14deg, #010101 -6.84%, #212121 118.48%)"};
 
   border-radius: 1rem;
@@ -69,14 +71,51 @@ const DivEventCard = styled.div`
   padding: 3rem 3rem 0 3rem;
   backdrop-filter: blur(2px);
 `;
+*/
 
+const DivEventCard = styled.div`
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  width: 42rem;
+  height: 44rem;
+
+  padding: 3rem;
+
+  border-radius: 4.5rem;
+
+  background: ${({ alternate }) =>
+    alternate
+      ? "linear-gradient(160deg, rgba(138,43,226,0.25), rgba(0,0,0,0.9))"
+      : "linear-gradient(160deg, rgba(0,0,0,0.9), rgba(30,30,30,0.9))"};
+
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 0 15px rgba(129, 29, 223, 0.3);
+    border: 1px solid rgba(138, 43, 226, 0.6);
+  }
+
+  @media (max-width: 760px) {
+    width: 100%;
+    height: 48rem;
+  }
+`;
 
 
 const EventCardTitle = styled.div`
-  font-size: 3.4rem;
+  font-size: 3rem;
   margin-bottom:2.5rem;
-  font-weight: 700;
-  color: white;
+  font-weight: 300;
+  
+  color: #e6caff;
+  text-shadow: 0 0 8px rgba(230, 202, 255, 0.5), 0 0 16px rgba(138, 43, 226, 0.15);
   @media (max-width: 760px) {
     font-size: 4rem;
     margin-bottom:1rem;
@@ -84,9 +123,9 @@ const EventCardTitle = styled.div`
 `;
 
 const EventCardBody = styled.div`
-  font-size: 2.0rem;
+  font-size: 2rem;
   line-height: 1.4;
-  font-weight: 400;
+  font-weight: 500;
   word-wrap: wrap;
   color: white;
   @media (max-width: 760px) {
@@ -102,7 +141,7 @@ const DivEventCardBottom = styled.div`
 
 const EventCardLine = styled.div`
   border-bottom: solid 0.2rem rgba(255, 255, 255, 0.2);
-  font-size: 2.8rem;
+  font-size: 2rem;
   padding-bottom: 1.4rem;
   label {
     color: #9882f8;
@@ -113,7 +152,7 @@ const EventCardLine = styled.div`
 `;
 
 const EventDate = styled.div`
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: 375;
   color: white;
   display: flex;
@@ -128,7 +167,7 @@ const EventCardFooter = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 7.2rem;
+  height: 6.2rem;
 `;
 
 const HighlightButton = keyframes`
