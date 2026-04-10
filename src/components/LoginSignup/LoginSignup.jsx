@@ -6,7 +6,6 @@ import mailIcon from "../../assets/ls-icons/mail.png";
 import phoneIcon from "../../assets/ls-icons/phone.png";
 import userIcon from "../../assets/ls-icons/user-round.png";
 import bookIcon from "../../assets/ls-icons/book-user.png";
-import closeIcon from "../../assets/ls-icons/close.png";
 import collegeIcon from "../../assets/ls-icons/college.png";
 import worldIcon from "../../assets/ls-icons/world.png";
 import axios from "axios";
@@ -23,18 +22,16 @@ const LoginSignup = function ({ toggleLoginSignup }) {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const { data } = await axios.post("auth/login", loginData, {
+      const { data } = await axios.post("/auth/login", loginData, {
         withCredentials: true,
       });
       toast.success("Logged in successfully");
       setUser(data);
       toggleLoginSignup();
     } catch (ex) {
-      if (ex.response.data.error) {
-        toast.error(ex.response.data.error);
-      } else {
-        toast.error("Something went wrong");
-      }
+      // FIX: use optional chaining so a network error (no response) doesn't crash here
+      const message = ex.response?.data?.error || "Something went wrong";
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -65,84 +62,63 @@ const LoginSignup = function ({ toggleLoginSignup }) {
   const handleSignup = async function (e) {
     e.preventDefault();
     setIsLoading(true);
-    if (signupData["regNo"] == "") {
-      const randomRegNo = generateRandomReg(8);
-      await setsignupData((data) => ({ ...data, regNo: randomRegNo }));
-    }
+
+    // FIX: don't await setState — compute the final payload synchronously instead
+    const payload = {
+      ...signupData,
+      regNo: signupData.regNo || generateRandomReg(8),
+    };
+
     try {
-      const { data } = await axios.post("/auth/register", signupData);
-      toast.success("User created successfully");
-      handleCheckboxChange();
+      await axios.post("/auth/register", payload);
+      toast.success("Registered successfully! Please log in.");
+      // flip to login tab
+      setIsChecked(false);
+      // reset signup form
+      setsignupData({
+        name: "",
+        regNo: "",
+        collegeName: "",
+        membershipNo: "",
+        phone: "",
+        email: "",
+        password: "",
+      });
     } catch (ex) {
-      if (ex.response.data.error) {
-        toast.error(ex.response.data.error);
-      } else {
-        toast.error("Something went wrong");
-      }
+      // FIX: same optional chaining fix as login
+      const message = ex.response?.data?.error || "Something went wrong";
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // const handleForgotPassword = async function () {
-  //   //check if email is filled or not
-  //   if (!loginData.email) {
-  //     toast.error("Please enter email first");
-  //     return;
-  //   }
-  //   try {
-  //     const payload = { email: loginData.email };
-  //     const { data } = await axios.post("/password/forgot", payload);
-  //     toast.success(data?.message, {
-  //       duration: 8000,
-  //     });
-  //   } catch (ex) {
-  //     if (ex.response.data.error) {
-  //       toast.error(ex.response.data.error);
-  //     } else {
-  //       toast.error("Something went wrong");
-  //     }
-  //   }
-  // };
-
   const handleForgotPassword = async () => {
-    // Check if email is filled or not
     if (!loginData.email) {
-      return Promise.reject("Email not provided");
+      return Promise.reject("Please enter your email first");
     }
-
     try {
       const payload = { email: loginData.email };
       const response = await axios.post("/password/forgot", payload);
       return Promise.resolve(response.data.message);
     } catch (error) {
-      if (error.response && error.response.data.error) {
-        return Promise.reject(error.response.data.error);
-      } else {
-        return Promise.reject("Something went wrong");
-      }
+      // FIX: optional chaining here too
+      const message = error.response?.data?.error || "Something went wrong";
+      return Promise.reject(message);
     }
   };
 
-  // Call handleForgotPassword and display a toast based on the promise state
   const handleForgotPasswordWithToast = () => {
     const promise = handleForgotPassword();
-
     toast.promise(
       promise,
       {
         loading: "Sending email...",
-        success: (message) => {
-          return message;
-        },
-        error: (errorMessage) => {
-          return errorMessage;
-        },
+        success: (message) => message,
+        error: (errorMessage) => errorMessage,
       },
       {
-        success: {
-          duration: 5000,
-        },
+        success: { duration: 5000 },
       }
     );
   };
@@ -156,6 +132,7 @@ const LoginSignup = function ({ toggleLoginSignup }) {
   const handleTogglePassword = () => {
     setPasswordVisible(!passwordVisible);
   };
+
   return (
     <section className="ls-outer-container">
       <div className="container">
@@ -168,8 +145,11 @@ const LoginSignup = function ({ toggleLoginSignup }) {
               Sign Up
             </span>
           </label>
-          <span className="close-button text-[#8B5CF6] border-2 rounded-2xl " onClick={toggleLoginSignup}>
-           X
+          <span
+            className="close-button text-[#8B5CF6] border-2 rounded-2xl"
+            onClick={toggleLoginSignup}
+          >
+            X
           </span>
         </h6>
         <div></div>
@@ -185,6 +165,7 @@ const LoginSignup = function ({ toggleLoginSignup }) {
         <label htmlFor="reg-log" className="slider"></label>
         <div className="card-3d-wrap mx-auto">
           <div className="card-3d-wrapper">
+            {/* LOGIN CARD */}
             <div className="card-front">
               <form className="center-wrap" onSubmit={handleLogin}>
                 <div className="form-group mt-6">
@@ -211,22 +192,16 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                       placeholder="Password"
                       value={loginData.password}
                       onChange={(e) =>
-                        setLoginData({
-                          ...loginData,
-                          password: e.target.value,
-                        })
+                        setLoginData({ ...loginData, password: e.target.value })
                       }
                       required
                     />
-                    <span
-                      className="see-password"
-                      onClick={handleTogglePassword}
-                    >
+                    <span className="see-password" onClick={handleTogglePassword}>
                       <img src={eyeIcon} alt="eye" />
                     </span>
                   </div>
                 </div>
-                <button className="btn mt-6" type="submit">
+                <button className="btn mt-6" type="submit" disabled={isLoading}>
                   {isLoading && (
                     <img
                       src={circleSpinner}
@@ -238,15 +213,14 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                   Login
                 </button>
                 <p className="mb-0 mt-3 text-center">
-                  <span
-                    className="link"
-                    onClick={handleForgotPasswordWithToast}
-                  >
+                  <span className="link" onClick={handleForgotPasswordWithToast}>
                     Forgot password?
                   </span>
                 </p>
               </form>
             </div>
+
+            {/* SIGNUP CARD */}
             <div className="card-back">
               <form className="center-wrap" onSubmit={handleSignup}>
                 <div className="form-group mt-1">
@@ -259,10 +233,7 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                       placeholder="Full Name"
                       value={signupData.name}
                       onChange={(e) =>
-                        setsignupData({
-                          ...signupData,
-                          name: e.target.value,
-                        })
+                        setsignupData({ ...signupData, name: e.target.value })
                       }
                       required
                     />
@@ -274,21 +245,17 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                     <input
                       type="text"
                       className="form-input"
-                      id="numberInput"
                       placeholder="Registration Number"
                       value={signupData.regNo}
                       onChange={(e) =>
-                        setsignupData({
-                          ...signupData,
-                          regNo: e.target.value,
-                        })
+                        setsignupData({ ...signupData, regNo: e.target.value })
                       }
                     />
                   </div>
                 </div>
                 <div className="form-group mt-1">
                   <div className="form-style">
-                    <img src={collegeIcon} alt="book" />
+                    <img src={collegeIcon} alt="college" />
                     <span className="asterick">*</span>
                     <input
                       type="text"
@@ -301,12 +268,13 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                           collegeName: e.target.value,
                         })
                       }
+                      required
                     />
                   </div>
                 </div>
                 <div className="form-group mt-1">
                   <div className="form-style">
-                    <img src={worldIcon} alt="book" />
+                    <img src={worldIcon} alt="world" />
                     <input
                       type="text"
                       className="form-input"
@@ -350,10 +318,7 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                       placeholder="Email"
                       value={signupData.email}
                       onChange={(e) =>
-                        setsignupData({
-                          ...signupData,
-                          email: e.target.value,
-                        })
+                        setsignupData({ ...signupData, email: e.target.value })
                       }
                       required
                     />
@@ -376,15 +341,12 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                       }
                       required
                     />
-                    <span
-                      className="see-password"
-                      onClick={handleTogglePassword}
-                    >
+                    <span className="see-password" onClick={handleTogglePassword}>
                       <img src={eyeIcon} alt="eye" />
                     </span>
                   </div>
                 </div>
-                <button className="btn mt-2">
+                <button className="btn mt-2" type="submit" disabled={isLoading}>
                   {isLoading && (
                     <img
                       src={circleSpinner}
