@@ -1,3 +1,4 @@
+
 /* Accordion Root Container */
 .AccordionRoot {
   width: 100%;
@@ -25,24 +26,24 @@
   justify-content: space-between;
   width: 100%;
   padding: 16px 20px;
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: transparent;
   color: #e0e0e0;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   border-radius: 8px;
   transition: all 0.3s ease;
-  border: 1px solid rgba(0, 217, 255, 0.2);
+  border: 1px solid rgba(102, 73, 184, 0.25);
 }
 
 .AccordionTrigger:hover {
-  background-color: rgba(255, 255, 255, 0.12);
-  border-color: rgba(0, 217, 255, 0.4);
+  background-color: rgba(102, 73, 184, 0.1);
+  border-color: rgba(102, 73, 184, 0.5);
 }
 
 .AccordionTrigger[data-state="open"] {
-  background-color: rgba(0, 217, 255, 0.15);
-  border-color: rgba(0, 217, 255, 0.5);
+  background-color: rgba(102, 73, 184, 0.15);
+  border-color: rgba(102, 73, 184, 0.6);
 }
 
 .TriggerText {
@@ -55,7 +56,7 @@
 .AccordionChevron {
   width: 20px;
   height: 20px;
-  color: #00d9ff;
+  color: #6649b8;
   flex-shrink: 0;
   margin-left: 12px;
   transition: transform 0.3s ease;
@@ -69,9 +70,9 @@
 .AccordionContent {
   overflow: hidden;
   animation: slideDown 0.3s ease;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: transparent;
   border-radius: 0 0 8px 8px;
-  border: 1px solid rgba(0, 217, 255, 0.15);
+  border: 1px solid rgba(102, 73, 184, 0.15);
   border-top: none;
 }
 
@@ -104,7 +105,7 @@
 /* Accordion Content Text */
 .AccordionContentText {
   padding: 16px 20px;
-  color: #c0c0c0;
+  color: #d0d0d0;
   font-size: 14px;
   line-height: 1.6;
   letter-spacing: 0.2px;
