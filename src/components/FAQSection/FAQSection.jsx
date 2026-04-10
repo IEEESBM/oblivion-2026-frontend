@@ -1,3 +1,4 @@
+
 import styled from "styled-components";
 import React from "react";
 import * as Accordion from "@radix-ui/react-accordion";
@@ -29,14 +30,23 @@ const Div = styled.div`
 `;
 
 const FAQContainer = styled.div`
-  border: 2.5px solid #00d9ff;
+  border: 1.5px solid rgba(180, 160, 255, 0.3);
   border-radius: 20px;
   padding: 40px;
-  background-color: rgba(0, 0, 0, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(102, 73, 184, 0.15) 0%,
+    rgba(80, 60, 150, 0.1) 50%,
+    rgba(102, 73, 184, 0.08) 100%
+  );
   width: 100%;
   max-width: 700px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 0 30px rgba(0, 217, 255, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:
+    0 0 30px rgba(102, 73, 184, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(102, 73, 184, 0.1);
 
   @media (max-width: 760px) {
     padding: 30px;
@@ -92,7 +102,6 @@ AccordionContent.displayName = "AccordianContent";
 
 const FAQSection = React.forwardRef(({ onIntersection }, forwardedRef) => {
   const [ref, inView] = useInView({
-    // threshold: 0.5,
     onChange: (inView) => {
       if (inView) {
         onIntersection();
@@ -159,13 +168,14 @@ const FAQSection = React.forwardRef(({ onIntersection }, forwardedRef) => {
               </div>
             </Accordion.Content>
           </Accordion.Item>
+
           <Accordion.Item className="AccordionItem" value="item-6">
             <AccordionTrigger>
-            Where can I get recent updates about the events?
+              Where can I get recent updates about the events?
             </AccordionTrigger>
             <Accordion.Content className="AccordionContent">
               <div className="AccordionContentText">
-              Stay up to date by joining our WhatsApp group! Get the latest announcements, updates, and important information directly.
+                Stay up to date by joining our WhatsApp group! Get the latest announcements, updates, and important information directly.
               </div>
             </Accordion.Content>
           </Accordion.Item>
@@ -179,4 +189,3 @@ const FAQSection = React.forwardRef(({ onIntersection }, forwardedRef) => {
 FAQSection.displayName = "FAQSection";
 
 export default FAQSection;
-
