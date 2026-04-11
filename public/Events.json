@@ -11,7 +11,7 @@
       "4. Outplay Rivals – Balance coding skill and strategy to dominate or collapse!"
     ],
     "Date": "11/04/2026",
-    "Time": "6pm to 8pm",
+    "Time": "5:30 PM to 8:30 PM",
     "Venue": "Offline",
     "Team Size": "Individual",
     "Prize Pool": 6000,
@@ -30,7 +30,7 @@
       "4. Outlast the Collapse – Combine logic and creativity to stand out and win!"
     ],
     "Date": "12/03/2026",
-    "Time": "5:30 - 8:30 PM",
+    "Time": "5:30 PM to 8:30 PM",
     "Venue": "Online",
     "Team Size": "1-2",
     "Prize Pool": 5000,
@@ -49,7 +49,7 @@
       "4. Think Like AI – Evaluate performance based on consistency and outcomes."
     ],
     "Date": "12/04/2026",
-    "Time": "5:30pm to 7:30pm",
+    "Time": "5:30 PM to 8:30 PM",
     "Venue": "Offline",
     "Team Size": "Individual",
     "isIndividual": true,
@@ -67,10 +67,10 @@
       "4. Outsmart the System – Balance trust, risk, and strategy to maximize resources and win!"
     ],
     "Date": "13/04/2026",
-    "Time": "will be updated",
+    "Time": "Full day",
     "Venue": "Online",
     "Team Size": "Individual",
-    "Prize Pool": 6000,
+    "Prize Pool": 5000,
     "isIndividual": true,
     "ShortDesc": "Train models to balance strategy and betrayal in a high-stakes resource management gamble"
   },
@@ -86,7 +86,7 @@
       "4. Think, Design & Build – Progress from theory to simulation to real-world execution to claim victory!"
     ],
     "Date": "13/04/2026",
-    "Time": "R1-(9pm to 10pm) R2-(11am to 2pm)\n",
+    "Time": "5:30 PM to 8:30 PM",
     "Venue": "AB5\n",
     "Team Size": "2-3",
     "Prize Pool": 6000,
@@ -117,8 +117,8 @@
       "4. Race to Victory – Outsmart the competition and claim the prize!"
     ],
     "Date": "15/04/2026",
-    "Time": "4pm to 7:30pm",
-    "Venue": "MIT Campus",
+    "Time": "5:30 PM to 8:30 PM",
+    "Venue": "Offline",
     "Team Size": "2-4",
     "Prize Pool": 6000,
     "isIndividual": false,
