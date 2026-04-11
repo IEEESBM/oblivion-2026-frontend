@@ -18,8 +18,62 @@ const LoginSignup = function ({ toggleLoginSignup }) {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const { setUser } = useContext(UserContext);
 
+  // ── Manual validation helpers ──────────────────────────────────────────────
+  // We use noValidate on both forms + these checks instead of HTML `required`.
+  // Reason: the browser's native "please fill this field" bubble renders at the
+  // wrong position (sometimes off-screen) inside a 3D-CSS-transformed element.
+
+  const validateLogin = () => {
+    if (!loginData.email.trim()) {
+      toast.error("Please enter your email");
+      return false;
+    }
+    if (!loginData.password) {
+      toast.error("Please enter your password");
+      return false;
+    }
+    return true;
+  };
+
+  const validateSignup = () => {
+    if (!signupData.name.trim()) {
+      toast.error("Full name is required");
+      return false;
+    }
+    if (!signupData.collegeName.trim()) {
+      toast.error("College name is required");
+      return false;
+    }
+    if (!signupData.phone) {
+      toast.error("Phone number is required");
+      return false;
+    }
+    const phoneStr = String(signupData.phone);
+    if (!/^\d{10}$/.test(phoneStr)) {
+      toast.error("Enter a valid 10-digit phone number");
+      return false;
+    }
+    if (!signupData.email.trim()) {
+      toast.error("Email is required");
+      return false;
+    }
+    if (!signupData.password) {
+      toast.error("Password is required");
+      return false;
+    }
+    if (signupData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return false;
+    }
+    return true;
+  };
+
+  // ── Handlers ──────────────────────────────────────────────────────────────
+
   const handleLogin = async function (e) {
     e.preventDefault();
+    if (!validateLogin()) return;
+
     setIsLoading(true);
     try {
       const { data } = await axios.post("/auth/login", loginData, {
@@ -29,7 +83,6 @@ const LoginSignup = function ({ toggleLoginSignup }) {
       setUser(data);
       toggleLoginSignup();
     } catch (ex) {
-      // FIX: use optional chaining so a network error (no response) doesn't crash here
       const message = ex.response?.data?.error || "Something went wrong";
       toast.error(message);
     } finally {
@@ -61,9 +114,9 @@ const LoginSignup = function ({ toggleLoginSignup }) {
 
   const handleSignup = async function (e) {
     e.preventDefault();
-    setIsLoading(true);
+    if (!validateSignup()) return;
 
-    // FIX: don't await setState — compute the final payload synchronously instead
+    setIsLoading(true);
     const payload = {
       ...signupData,
       regNo: signupData.regNo || generateRandomReg(8),
@@ -72,9 +125,7 @@ const LoginSignup = function ({ toggleLoginSignup }) {
     try {
       await axios.post("/auth/register", payload);
       toast.success("Registered successfully! Please log in.");
-      // flip to login tab
       setIsChecked(false);
-      // reset signup form
       setsignupData({
         name: "",
         regNo: "",
@@ -85,7 +136,6 @@ const LoginSignup = function ({ toggleLoginSignup }) {
         password: "",
       });
     } catch (ex) {
-      // FIX: same optional chaining fix as login
       const message = ex.response?.data?.error || "Something went wrong";
       toast.error(message);
     } finally {
@@ -102,7 +152,6 @@ const LoginSignup = function ({ toggleLoginSignup }) {
       const response = await axios.post("/password/forgot", payload);
       return Promise.resolve(response.data.message);
     } catch (error) {
-      // FIX: optional chaining here too
       const message = error.response?.data?.error || "Something went wrong";
       return Promise.reject(message);
     }
@@ -117,21 +166,15 @@ const LoginSignup = function ({ toggleLoginSignup }) {
         success: (message) => message,
         error: (errorMessage) => errorMessage,
       },
-      {
-        success: { duration: 5000 },
-      }
+      { success: { duration: 5000 } }
     );
   };
 
   const [isChecked, setIsChecked] = useState(false);
-  const handleCheckboxChange = () => {
-    setIsChecked((s) => !s);
-  };
+  const handleCheckboxChange = () => setIsChecked((s) => !s);
 
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const handleTogglePassword = () => {
-    setPasswordVisible(!passwordVisible);
-  };
+  const handleTogglePassword = () => setPasswordVisible((v) => !v);
 
   return (
     <section className="ls-outer-container">
@@ -163,11 +206,16 @@ const LoginSignup = function ({ toggleLoginSignup }) {
           checked={isChecked}
         />
         <label htmlFor="reg-log" className="slider"></label>
+
         <div className="card-3d-wrap mx-auto">
           <div className="card-3d-wrapper">
-            {/* LOGIN CARD */}
+
+            {/* ── LOGIN CARD ── */}
             <div className="card-front">
-              <form className="center-wrap" onSubmit={handleLogin}>
+              {/* noValidate: disables browser native validation bubbles which
+                  render at wrong positions inside 3D-transformed elements.
+                  Validation is handled manually via toast in handleLogin. */}
+              <form className="center-wrap" onSubmit={handleLogin} noValidate>
                 <div className="form-group mt-6">
                   <div className="form-style">
                     <img src={mailIcon} alt="email" />
@@ -179,7 +227,6 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                       onChange={(e) =>
                         setLoginData({ ...loginData, email: e.target.value })
                       }
-                      required
                     />
                   </div>
                 </div>
@@ -194,10 +241,9 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                       onChange={(e) =>
                         setLoginData({ ...loginData, password: e.target.value })
                       }
-                      required
                     />
                     <span className="see-password" onClick={handleTogglePassword}>
-                      <img src={eyeIcon} alt="eye" />
+                      <img src={eyeIcon} alt="toggle password" />
                     </span>
                   </div>
                 </div>
@@ -212,13 +258,12 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                   )}
                   Login
                 </button>
-                
               </form>
             </div>
 
-            {/* SIGNUP CARD */}
+            {/* ── SIGNUP CARD ── */}
             <div className="card-back">
-              <form className="center-wrap" onSubmit={handleSignup}>
+              <form className="center-wrap" onSubmit={handleSignup} noValidate>
                 <div className="form-group mt-1">
                   <div className="form-style">
                     <img src={userIcon} alt="user" />
@@ -231,7 +276,6 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                       onChange={(e) =>
                         setsignupData({ ...signupData, name: e.target.value })
                       }
-                      required
                     />
                   </div>
                 </div>
@@ -259,12 +303,8 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                       placeholder="College Name"
                       value={signupData.collegeName}
                       onChange={(e) =>
-                        setsignupData({
-                          ...signupData,
-                          collegeName: e.target.value,
-                        })
+                        setsignupData({ ...signupData, collegeName: e.target.value })
                       }
-                      required
                     />
                   </div>
                 </div>
@@ -277,10 +317,7 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                       placeholder="IEEE Membership No"
                       value={signupData.membershipNo}
                       onChange={(e) =>
-                        setsignupData({
-                          ...signupData,
-                          membershipNo: e.target.value,
-                        })
+                        setsignupData({ ...signupData, membershipNo: e.target.value })
                       }
                     />
                   </div>
@@ -295,12 +332,8 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                       placeholder="Phone Number"
                       value={signupData.phone}
                       onChange={(e) =>
-                        setsignupData({
-                          ...signupData,
-                          phone: Number(e.target.value),
-                        })
+                        setsignupData({ ...signupData, phone: e.target.value })
                       }
-                      required
                     />
                   </div>
                 </div>
@@ -316,7 +349,6 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                       onChange={(e) =>
                         setsignupData({ ...signupData, email: e.target.value })
                       }
-                      required
                     />
                   </div>
                 </div>
@@ -330,15 +362,11 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                       placeholder="Password"
                       value={signupData.password}
                       onChange={(e) =>
-                        setsignupData({
-                          ...signupData,
-                          password: e.target.value,
-                        })
+                        setsignupData({ ...signupData, password: e.target.value })
                       }
-                      required
                     />
                     <span className="see-password" onClick={handleTogglePassword}>
-                      <img src={eyeIcon} alt="eye" />
+                      <img src={eyeIcon} alt="toggle password" />
                     </span>
                   </div>
                 </div>
@@ -355,6 +383,7 @@ const LoginSignup = function ({ toggleLoginSignup }) {
                 </button>
               </form>
             </div>
+
           </div>
         </div>
       </div>

@@ -152,7 +152,7 @@ h6 span {
   position: relative;
   width: 460px;
   max-width: 92%;
-  height: 460px;       /* taller — fits login with breathing room */
+  height: 460px;
   transform-style: preserve-3d;
   perspective: 800px;
   margin-top: 12px;
@@ -180,7 +180,6 @@ h6 span {
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  /* critical — hides each side when facing away */
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -191,6 +190,29 @@ h6 span {
 
 .checkbox:checked ~ .card-3d-wrap .card-3d-wrapper {
   transform: rotateY(180deg);
+}
+
+/*
+  FIX: pointer-events management.
+  When showing LOGIN (checkbox unchecked):
+    - front card is visible → pointer-events: auto (default)
+    - back card is flipped away → pointer-events: none  ← was missing!
+  When showing SIGNUP (checkbox checked):
+    - front card is flipped away → pointer-events: none  ← was missing!
+    - back card is visible → pointer-events: auto
+  Without this the invisible front card was intercepting all clicks on signup fields.
+*/
+.card-front {
+  pointer-events: auto;
+}
+.card-back {
+  pointer-events: none;
+}
+.checkbox:checked ~ .card-3d-wrap .card-front {
+  pointer-events: none;
+}
+.checkbox:checked ~ .card-3d-wrap .card-back {
+  pointer-events: auto;
 }
 
 .center-wrap {
@@ -219,6 +241,8 @@ h6 span {
   border: 1.5px solid rgba(102, 73, 184, 0.45);
   transition: border-color 0.2s, box-shadow 0.2s;
   position: relative;
+  /* FIX: show text cursor when hovering over the whole field row */
+  cursor: text;
 }
 
 .form-style:focus-within {
@@ -230,6 +254,8 @@ h6 span {
   margin-left: 1.2rem;
   flex-shrink: 0;
   opacity: 0.7;
+  /* FIX: icon should keep default cursor, not text cursor */
+  cursor: default;
 }
 
 .form-input {
@@ -242,6 +268,8 @@ h6 span {
   font-size: 1.6rem;
   letter-spacing: 0.02em;
   outline: none;
+  /* FIX: explicitly set text cursor on the input itself */
+  cursor: text;
 }
 
 .see-password {
@@ -297,6 +325,12 @@ input[type="number"]::-webkit-outer-spin-button {
 .btn:active {
   transform: translateY(0);
   box-shadow: 0 2px 8px rgba(102, 73, 184, 0.3);
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* ── Spacing helpers ── */
