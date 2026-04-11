@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { Select } from "@chakra-ui/select";
 import bg from "../assets/blackhole-bg.png";
 import { MdArrowBack } from "react-icons/md";
@@ -14,11 +14,16 @@ import { FaWhatsapp } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
+const GlobalFonts = createGlobalStyle`
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap');
+`;
+
+
 // ─── FIX: position:relative so absolute children (MobileBackButton) are
 //          contained inside this element instead of floating to the viewport top.
 const EventContainer = styled.div`
   position: relative;
-  font-family: "Montserrat";
+  font-family: "Rajdhani", sans-serif;
   display: flex;
   flex-direction: row;
   width: 100vw;
@@ -31,8 +36,8 @@ const EventContainer = styled.div`
     flex-direction: column;
     background-color: #010101;
     min-height: 100vh;
-    height: 100vh;
-    overflow: hidden;
+    height: auto;
+    overflow: visible;
   }
 `;
 
@@ -68,26 +73,33 @@ const EventSidebarButton = styled.button`
       ? "linear-gradient(135deg, #16A2D1, #010101)"
       : "linear-gradient(135deg, #010101, #101010)"};
   color: #fff;
-  font-size: clamp(1.5rem, 1.2vw, 2.1rem);
-  letter-spacing: -0.03vw;
+  font-family: "Rajdhani", sans-serif;
+  font-size: clamp(1.5rem, 1.15vw, 2rem);
+  font-weight: ${(props) => (props.selected ? "600" : "500")};
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   text-align: center;
-  transition: background 0.25s ease;
+  transition: background 0.25s ease, text-shadow 0.25s ease;
   cursor: pointer;
   border-radius: 0 2rem 2rem 0;
   white-space: normal;
-  opacity: 0.8;
+  opacity: 0.85;
   word-wrap: break-word;
-  text-overflow: ellipsis;
+  text-shadow: ${(props) =>
+    props.selected
+      ? "0 0 10px rgba(80, 200, 255, 0.7), 0 0 20px rgba(80, 200, 255, 0.3)"
+      : "none"};
 
   &:hover {
     background: ${(props) =>
-      props.selected
-        ? "linear-gradient(135deg, #1492BD, #010101)"
-        : "rgba(135, 134, 144, 0.5)"};
+    props.selected
+      ? "linear-gradient(135deg, #1492BD, #010101)"
+      : "rgba(135, 134, 144, 0.5)"};
+    text-shadow: 0 0 8px rgba(80, 200, 255, 0.5);
   }
 
   @media (max-width: 760px) {
-    font-size: 1.6rem;
+    font-size: 1.65rem;
     min-height: 4.5rem;
     padding: 0.6rem;
     border-radius: 2rem;
@@ -104,7 +116,7 @@ const MobileContainer = styled.div`
 `;
 
 const MobileSelect = styled(Select)`
-  font-family: "Montserrat";
+  font-family: "Rajdhani", sans-serif;
   height: 4rem;
   border-radius: 0.75rem;
   color: white;
@@ -141,15 +153,21 @@ const EventBackButton = styled.button`
   margin-bottom: 2rem;
   background-color: rgba(0, 0, 0, 0);
   color: #16c2d1;
-  font-size: clamp(2.5rem, 2.4vw, 4.4rem);
+  font-family: "Orbitron", sans-serif;
+  font-size: clamp(1.6rem, 1.5vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 10px rgba(22, 194, 209, 0.6), 0 0 22px rgba(22, 194, 209, 0.25);
   text-align: center;
   cursor: pointer;
+  transition: text-shadow 0.2s ease;
   .icon-back-arrow {
     transition: transform 0.2s ease-in-out;
     margin-right: -1rem;
     vertical-align: bottom;
   }
   &:hover {
+    text-shadow: 0 0 14px rgba(22, 194, 209, 0.9), 0 0 30px rgba(22, 194, 209, 0.4);
     .icon-back-arrow {
       transform: translateX(-1rem);
     }
@@ -165,10 +183,13 @@ const EventContent = styled.div`
   background-color: rgba(0, 0, 0, 0);
   background-size: cover;
   height: 100%;
+  min-height: 0;
   overflow-y: auto;
   flex: 1;
   @media (max-width: 760px) {
     width: 100%;
+    height: auto;
+    overflow-y: visible;
     margin-top: 2rem;
     padding-top: 0;
     justify-content: start;
@@ -191,36 +212,63 @@ const EventHeader = styled.div`
 `;
 
 const EventTitle = styled.div`
-  color: white;
-  font-size: clamp(3.2rem, 3.2vw, 5rem);
+  font-family: "Orbitron", sans-serif;
+  font-size: clamp(2.2rem, 2.6vw, 3.8rem);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  text-shadow: 0 0 18px rgba(114, 201, 255, 0.14);
+  letter-spacing: 0.08em;
+  background: linear-gradient(135deg, #ffffff 0%, #a8d4ff 50%, #7eb8f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 12px rgba(100, 180, 255, 0.55)) drop-shadow(0 2px 8px rgba(0,0,0,0.6));
   @media (max-width: 760px) {
     text-align: center;
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: 0.05em;
   }
 `;
 
 const EventRegisteredIndicator = styled.div`
+  font-family: "Rajdhani", sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.6rem, 1.5vw, 2.2rem);
+  letter-spacing: 0.06em;
   color: rgb(204, 197, 236);
-  font-size: clamp(3rem, 2.5vw, 3.8rem);
+  text-shadow: 0 0 8px rgba(180, 160, 255, 0.45);
   @media (max-width: 760px) {
-    font-size: 3.5rem;
+    font-size: 1.8rem;
     margin-top: 1.4rem;
+  }
+`;
+
+const EventContentRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 3rem;
+  align-items: stretch;
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+
+  @media (max-width: 760px) {
+    flex-direction: column;
+    gap: 1.6rem;
+    flex: none;
   }
 `;
 
 const EventDescriptionBox = styled.div`
   position: relative;
-  width: min(100%, 112rem);
+  flex: 1;
+  min-width: 0;
   background: linear-gradient(
     180deg,
     rgba(15, 11, 44, 0.9) 0%,
     rgba(11, 10, 35, 0.84) 100%
   );
   color: white;
-  padding: clamp(2.8rem, 2.8vw, 4.2rem);
+  padding: clamp(3.2rem, 3.4vw, 5rem);
   border-radius: 2.2rem;
   border: 1px solid rgba(124, 150, 255, 0.16);
   box-shadow:
@@ -228,7 +276,7 @@ const EventDescriptionBox = styled.div`
     inset 0 1px 0 rgba(196, 208, 255, 0.05);
   backdrop-filter: blur(12px);
   margin: 0;
-  overflow: visible;
+  overflow-y: auto;
 
   &::before {
     content: "";
@@ -258,8 +306,10 @@ const EventDescriptionBox = styled.div`
 
   @media (max-width: 760px) {
     width: 100%;
+    flex: none;
     border-radius: 1.7rem;
     padding: 2rem 1.8rem;
+    overflow-y: visible;
 
     &::before {
       left: 2rem;
@@ -274,13 +324,15 @@ const EventDescriptionBox = styled.div`
 `;
 
 const EventDescription = styled.p`
-  color: white;
-  font-size: clamp(1.7rem, 1.48vw, 2.35rem);
+  font-family: "Inter", sans-serif;
+  font-size: clamp(1.4rem, 1.15vw, 1.75rem);
   overflow-wrap: break-word;
   margin: 0;
-  line-height: 1.82;
+  line-height: 1.85;
   letter-spacing: 0.012em;
-  color: rgba(234, 240, 255, 0.94);
+  color: rgba(220, 232, 255, 0.92);
+  font-weight: 300;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 
   pre {
     margin: 0;
@@ -291,8 +343,8 @@ const EventDescription = styled.p`
   }
 
   @media (max-width: 760px) {
-    font-size: 1.72rem;
-    line-height: 1.76;
+    font-size: 1.42rem;
+    line-height: 1.78;
   }
 `;
 
@@ -300,7 +352,7 @@ const EventDetailTopContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: left;
-  gap: 1.4rem;
+  gap: 1.2rem;
 
   @media (max-width: 760px) {
     font-size: 2rem;
@@ -314,7 +366,7 @@ const EventDetailContainer = styled.div`
   flex-direction: row;
   gap: 1.6rem;
   align-items: flex-start;
-  padding: 0.85rem 0;
+  padding: 0.8rem 0;
   border-bottom: 1px solid rgba(113, 125, 189, 0.12);
 
   &:last-child {
@@ -329,24 +381,29 @@ const EventDetailContainer = styled.div`
 `;
 
 const EventDetailKey = styled.div`
-  font-size: clamp(1.45rem, 1.08vw, 1.9rem);
+  font-family: "Orbitron", sans-serif;
+  font-size: clamp(1.05rem, 0.82vw, 1.35rem);
   color: #94aefc;
   white-space: nowrap;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  min-width: 14rem;
+  min-width: 12rem;
+  text-shadow: 0 0 8px rgba(100, 140, 255, 0.5), 0 0 16px rgba(100, 140, 255, 0.2);
 
   @media (max-width: 760px) {
-    font-size: 1.45rem;
-    min-width: 10rem;
+    font-size: 1.05rem;
+    min-width: 9rem;
   }
 `;
 
 const EventDetailValue = styled.div`
-  font-size: clamp(1.55rem, 1.16vw, 2rem);
-  color: rgba(244, 247, 255, 0.95);
-  line-height: 1.62;
+  font-family: "Rajdhani", sans-serif;
+  font-size: clamp(1.45rem, 1.12vw, 1.85rem);
+  font-weight: 500;
+  color: rgba(230, 240, 255, 0.95);
+  line-height: 1.6;
+  letter-spacing: 0.02em;
 
   pre {
     margin: 0;
@@ -357,7 +414,7 @@ const EventDetailValue = styled.div`
 
   @media (max-width: 760px) {
     margin-top: 0rem;
-    font-size: 1.55rem;
+    font-size: 1.45rem;
   }
 `;
 
@@ -429,10 +486,12 @@ const EventRegisterButton = styled.button`
     rgba(27, 62, 130, 0.9) 100%
   );
   color: rgba(255, 255, 255, 1);
-  font-size: clamp(1.35rem, 0.98vw, 1.7rem);
+  font-family: "Orbitron", sans-serif;
+  font-size: clamp(1.1rem, 0.85vw, 1.4rem);
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(150, 180, 255, 0.4);
   border: 1px solid rgba(133, 160, 255, 0.22);
   opacity: 1;
   border-radius: 999px;
@@ -521,9 +580,12 @@ const Form = styled.form`
 `;
 
 const DivTeamTitle = styled.div`
-  font-size: clamp(2rem, 2vw, 3rem);
+  font-family: "Rajdhani", sans-serif;
+  font-size: clamp(1.8rem, 1.8vw, 2.6rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
   color: rgb(89, 155, 161);
-  font-weight: 400;
+  text-shadow: 0 0 10px rgba(89, 155, 161, 0.5);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -539,8 +601,12 @@ const DivTeamTitle = styled.div`
 
 const ListTeamMembers = styled.ul`
   list-style: none;
-  color: rgba(255, 255, 255, 1);
-  font-size: clamp(2rem, 2vw, 3rem);
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  color: rgba(220, 232, 255, 0.9);
+  font-size: clamp(1.5rem, 1.5vw, 2.2rem);
+  letter-spacing: 0.01em;
+  line-height: 1.7;
 `;
 
 const AlertDialogBox = styled(AlertDialogPrimitive.Content)`
@@ -565,12 +631,16 @@ const AlertDialogBox = styled(AlertDialogPrimitive.Content)`
 `;
 
 const AlertDialogText = styled.div`
+  font-family: "Rajdhani", sans-serif;
+  font-weight: 500;
   color: #fff;
-  font-size: clamp(3rem, 2.5vw, 3.8rem);
+  font-size: clamp(2.2rem, 2vw, 3rem);
   white-space: normal;
-  line-height: 1.2;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
   @media (max-width: 760px) {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 `;
 
@@ -669,7 +739,7 @@ const Events = ({ toggleLoginSignup }) => {
   };
 
   const handleCreateTeamForm = () => setShowCreateTeamForm((s) => !s);
-  const handleJoinTeamFrom   = () => setShowJoinTeamForm((s) => !s);
+  const handleJoinTeamFrom = () => setShowJoinTeamForm((s) => !s);
 
   const handleRegister = async function (content) {
     const payload = { eventId: content.ID, isIndividual: content.isIndividual };
@@ -786,7 +856,9 @@ const Events = ({ toggleLoginSignup }) => {
   const handleGoBack = () => navigate(-1);
 
   return (
-    <EventContainer>
+    <>
+      <GlobalFonts />
+      <EventContainer>
       {!mobile ? (
         <EventSidebar>
           <DivLogoSidebar>
@@ -845,51 +917,53 @@ const Events = ({ toggleLoginSignup }) => {
             {user?.event?.find(
               (registeredEvent) => registeredEvent.id === content?.ID
             ) && (
-              <div style={{ display: "flex" }}>
-                Registered |
-                <a
-                  href="https://chat.whatsapp.com/LWgiPYFRHCgEpomIXW2EEO"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "rgb(110, 157, 172)", marginLeft: "1rem" }}
-                >
-                  <FaWhatsapp />
-                </a>
-              </div>
-            )}
+                <div style={{ display: "flex" }}>
+                  Registered |
+                  <a
+                    href="https://chat.whatsapp.com/LWgiPYFRHCgEpomIXW2EEO"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "rgb(110, 157, 172)", marginLeft: "1rem" }}
+                  >
+                    <FaWhatsapp />
+                  </a>
+                </div>
+              )}
           </EventRegisteredIndicator>
         </EventHeader>
-        <EventDescriptionBox>
-          <EventDescription>
-            <pre style={{ whiteSpace: "pre-wrap" }}>
-              {content && content.Desc}
-            </pre>
-          </EventDescription>
-        </EventDescriptionBox>
-        <EventDescriptionBox>
-          <EventDetailTopContainer>
-            {content && (
-              <>
-                {EventDetails?.map((detail, index) =>
-                  detail !== "Prize Pool" ||
-                  (detail === "Prize Pool" && content[detail]) ? (
-                    <EventDetailContainer key={index}>
-                      <EventDetailKey>{detail + " - "}</EventDetailKey>{" "}
-                      <EventDetailValue>
-                        <pre style={{ whiteSpace: "pre-wrap", fontFamily: "inherit" }}>
-                          {detail === "Prize Pool" && "\u20B9"}
-                          {content[detail]}
-                        </pre>
-                      </EventDetailValue>
-                    </EventDetailContainer>
-                  ) : (
-                    <>&nbsp;</>
-                  )
-                )}
-              </>
-            )}
-          </EventDetailTopContainer>
-        </EventDescriptionBox>
+        <EventContentRow>
+          <EventDescriptionBox>
+            <EventDescription>
+              <pre style={{ whiteSpace: "pre-wrap" }}>
+                {content && content.Desc}
+              </pre>
+            </EventDescription>
+          </EventDescriptionBox>
+          <EventDescriptionBox>
+            <EventDetailTopContainer>
+              {content && (
+                <>
+                  {EventDetails?.map((detail, index) =>
+                    detail !== "Prize Pool" ||
+                      (detail === "Prize Pool" && content[detail]) ? (
+                      <EventDetailContainer key={index}>
+                        <EventDetailKey>{detail + " - "}</EventDetailKey>{" "}
+                        <EventDetailValue>
+                          <pre style={{ whiteSpace: "pre-wrap", fontFamily: "inherit" }}>
+                            {detail === "Prize Pool" && "\u20B9"}
+                            {content[detail]}
+                          </pre>
+                        </EventDetailValue>
+                      </EventDetailContainer>
+                    ) : (
+                      <>&nbsp;</>
+                    )
+                  )}
+                </>
+              )}
+            </EventDetailTopContainer>
+          </EventDescriptionBox>
+        </EventContentRow>
         <DivBottomContainer>
           {!user?.event?.find((e) => e?.id === content?.ID) ? (
             <>
@@ -1017,6 +1091,7 @@ const Events = ({ toggleLoginSignup }) => {
         <AlertDialogOverlay onClick={() => setOpen(false)} />
       </AlertDialogPrimitive.Root>
     </EventContainer>
+    </>
   );
 };
 
