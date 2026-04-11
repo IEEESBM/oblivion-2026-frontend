@@ -27,14 +27,9 @@ const OrbitStage = styled.div`
   position: relative;
   width: 100%;
   overflow: hidden;
-
-  /* desktop: 2*460 + 576 = 1496 → 1500px */
   height: 1500px;
-
-  /* tablet ≤900px */
   @media (max-width: 900px) { height: 1120px; }
-
-  /* mobile ≤600px: flat carousel — only needs card height + breathing room */
+  /* mobile: only needs card height + breathing room */
   @media (max-width: 600px) { height: 400px; }
 `;
 
@@ -42,9 +37,7 @@ const Orbit = styled.div`
   position: absolute;
   left: 50%;
   top: 750px;
-
   @media (max-width: 900px) { top: 560px; }
-  /* mobile: centre of the 400px stage */
   @media (max-width: 600px) { top: 200px; }
 `;
 
@@ -66,7 +59,6 @@ const DivEventCard = styled.div`
     padding: 1.75rem;
   }
 
-  /* mobile: nearly full-width card */
   @media (max-width: 600px) {
     width: 28rem;
     height: 28rem;
@@ -74,12 +66,10 @@ const DivEventCard = styled.div`
   }
 
   border-radius: 1.25rem;
-
   background: ${({ $alternate }) =>
     $alternate
       ? "linear-gradient(159.14deg, #1e2f72 -6.84%, #0d1b3e 118.48%)"
       : "linear-gradient(159.14deg, #0c1130 -6.84%, #0f1520 118.48%)"};
-
   border: 1px solid rgba(139, 92, 246, 0.25);
   backdrop-filter: blur(6px);
   transform-origin: center;
@@ -166,8 +156,6 @@ const EventDate = styled.div`
 `;
 
 const ExpandEventButton = styled.button`
-  width: 3.25rem;
-  height: 3.25rem;
   border-radius: 50%;
   background: rgba(10, 10, 30, 0.9);
   color: white;
@@ -175,14 +163,29 @@ const ExpandEventButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
   border: 1px solid rgba(139, 92, 246, 0.5);
   flex-shrink: 0;
   transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   box-shadow: 0 0 10px rgba(99, 60, 220, 0.25);
 
-  @media (max-width: 900px) { width: 2.5rem; height: 2.5rem; font-size: 1rem; }
-  @media (max-width: 600px) { width: 2.5rem; height: 2.5rem; font-size: 1rem; }
+  /* desktop */
+  width: 3.25rem;
+  height: 3.25rem;
+  font-size: 1.3rem;
+
+  @media (max-width: 900px) {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
+
+  /* FIX: significantly bigger on mobile so it's easy to tap */
+  @media (max-width: 600px) {
+    width: 5.5rem;
+    height: 5.5rem;
+    font-size: 2.4rem;
+    border-width: 2px;
+  }
 
   &:hover {
     background: rgba(99, 60, 220, 0.75);
@@ -201,7 +204,6 @@ const NavRow = styled.div`
   justify-content: center;
   gap: 1rem;
   height: 2.5rem;
-  margin-top: 0rem;
 `;
 
 const NavDot = styled.button`
@@ -236,34 +238,35 @@ const NavArrow = styled.button`
   &:hover { color: rgba(139, 92, 246, 1); }
 `;
 
-// ─── Constants ─────────────────────────────────────────────────────────────────
 
-const RADII = { desktop: 460, tablet: 340, mobile: 220 };
 
-// Half card sizes in px (synced with rem values above, at 10px base)
-// desktop: 30rem=300px, 36rem=360px → half: 150 × 180
-// tablet:  27rem=270px, 27rem=270px → half: 135 × 135
-// mobile:  28rem=280px, 28rem=280px → half: 140 × 140
+const RADII     = { desktop: 460, tablet: 340, mobile: 220 };
 const CARD_SIZES = {
-  desktop: { w: 240, h: 288 },
-  tablet:  { w: 216, h: 216 },
+  desktop: { w: 150, h: 180 },
+  tablet:  { w: 135, h: 135 },
   mobile:  { w: 140, h: 140 },
 };
-
 const ACTIVE_ANGLE = Math.PI / 2;
 
-// ─── Component ─────────────────────────────────────────────────────────────────
+// Minimum swipe distance (px) to trigger a slide
+const SWIPE_THRESHOLD = 40;
+
+
 
 const EventSection = () => {
-  const [events, setEvents] = useState(null);
+  const [events, setEvents]       = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const cardRefs      = useRef([]);
-  const radiusRef     = useRef(RADII.desktop);
-  const cardSizeRef   = useRef(CARD_SIZES.desktop);
+  const cardRefs       = useRef([]);
+  const radiusRef      = useRef(RADII.desktop);
+  const cardSizeRef    = useRef(CARD_SIZES.desktop);
   const activeIndexRef = useRef(0);
 
-  // Keep activeIndexRef in sync so resize handler can read current value
+  // Touch tracking refs — using refs (not state) so handlers don't go stale
+  const touchStartX = useRef(null);
+  const touchStartY = useRef(null);
+  const orbitStageRef = useRef(null);
+
   useEffect(() => { activeIndexRef.current = activeIndex; }, [activeIndex]);
 
   useEffect(() => {
@@ -286,14 +289,13 @@ const EventSection = () => {
       let x, y, scale, opacity;
 
       if (isMobile) {
-        // Flat horizontal carousel: active card centred, others slid off-screen
+        // Flat horizontal carousel on mobile
         const vw = window.innerWidth;
         x = offset * (vw * 0.92) - w;
         y = -h;
-        scale = 1;
+        scale   = 1;
         opacity = offset === 0 ? 1 : 0;
       } else {
-        // Original orbit layout for tablet + desktop
         const angle = ACTIVE_ANGLE + (offset / n) * 2 * Math.PI;
         x = Math.cos(angle) * r - w;
         y = Math.sin(angle) * r - h;
@@ -312,7 +314,6 @@ const EventSection = () => {
       const bp = ww <= 600 ? "mobile" : ww <= 900 ? "tablet" : "desktop";
       radiusRef.current   = RADII[bp];
       cardSizeRef.current = CARD_SIZES[bp];
-      // Re-position all cards whenever viewport changes
       positionCards(activeIndexRef.current);
     };
     update();
@@ -322,16 +323,60 @@ const EventSection = () => {
 
   useGSAP(() => { positionCards(activeIndex); }, [activeIndex, events]);
 
+  // ── Touch handlers ────────────────────────────────────────────────────────
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = useCallback((e) => {
+    if (touchStartX.current === null) return;
+    const dx = e.touches[0].clientX - touchStartX.current;
+    const dy = e.touches[0].clientY - touchStartY.current;
+    // Prevent page scroll only when horizontal swipe dominates
+    if (Math.abs(dx) > Math.abs(dy)) {
+      e.preventDefault();
+    }
+  }, []);
+
+  // Attach touchmove as non-passive so we can preventDefault
+  useEffect(() => {
+    const el = orbitStageRef.current;
+    if (!el) return;
+    el.addEventListener("touchmove", handleTouchMove, { passive: false });
+    return () => el.removeEventListener("touchmove", handleTouchMove);
+  }, [handleTouchMove]);
+
   if (!events) return null;
 
   const next = () => setActiveIndex(p => (p + 1) % events.length);
   const prev = () => setActiveIndex(p => (p - 1 + events.length) % events.length);
 
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+
+    // Only trigger if horizontal swipe dominates (not a scroll)
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_THRESHOLD) {
+      if (dx < 0) next(); // swipe left → next
+      else        prev(); // swipe right → prev
+    }
+
+    touchStartX.current = null;
+    touchStartY.current = null;
+  };
+
   return (
     <>
       <GlobalFont />
       <Section>
-        <OrbitStage>
+        <OrbitStage
+          ref={orbitStageRef}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           <Orbit>
             {events.map((event, i) => (
               <DivEventCard

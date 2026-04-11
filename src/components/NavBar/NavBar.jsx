@@ -190,7 +190,7 @@ export default function NavBar({
         {/* ── Logo / mobile top bar ── */}
         <Li className="logo-li">
           <a onClick={scrollToHero}>
-            <h1 className="hover:text-[#16C2D1] lg:hidden max-[1040px]:text-[40px]">
+            <h1 className="hover:text-[#16C2D1] max-[1040px]:block hidden max-[1040px]:text-[40px]">
               OBLIVION
             </h1>
           </a>
