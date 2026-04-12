@@ -10,8 +10,8 @@ import axios from "axios";
 import { Toaster } from "react-hot-toast";
 
 // Use import.meta.env for Vite or REACT_APP_ prefix for Create React App
-axios.defaults.baseURL =
-  import.meta.env.VITE_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+axios.defaults.baseURL = "/api";
+  
 axios.defaults.withCredentials = true;
 
 // Styled components for Login/Signup container
