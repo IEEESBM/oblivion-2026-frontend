@@ -1,5 +1,14 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://oblivion-backend.onrender.com/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ],
   "build": {
     "env": {
       "VERCEL_FORCE_NO_CACHE": "1"
